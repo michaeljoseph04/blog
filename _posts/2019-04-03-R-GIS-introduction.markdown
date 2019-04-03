@@ -9,8 +9,6 @@ categories: Project
 
 ![map-3-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/map-3-cars.jpeg)
 
-### Introduction
-
 ## Overview
 
 As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. But there are few introductions to the types of user cases which are common in this area. This brief walkthrough and the accompanying code should guide readers through some of this territory. Check out the [repo] which has the code for this. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis.
@@ -27,15 +25,6 @@ I will cover, then, several aspects of relating spatial data to their context:
 
 Again, these are basic operations; in future posts I'll explore spatial analysis proper, and deriving actual conclusions from the data. Be sure to go to the project [repository](https://github.com/michaeljoseph04/gis_intro) to find the code.
 
-## Data to be used
-
-The data I will be using is available from the [City of Seattle](https://data.seattle.gov/), which has made great strides in [Open Data practices](http://www.seattle.gov/tech/initiatives/open-data). To begin, I will use:
-
-- [Vehicle collisions data](https://data.seattle.gov/Transportation/Collisions/vac5-r8kk), which is available as [.csv file](http://data-seattlecitygis.opendata.arcgis.com/datasets/5b5c745e0f1f48e7a53acec63a0022ab_0.csv).
-- [City Clerk data on the neighborhoods of Seattle](https://data.seattle.gov/dataset/City-Clerk-Neighborhoods/926y-cwh9), specifically the [shapefile](http://data-seattlecitygis.opendata.arcgis.com/datasets/b76cdd45f7b54f2a96c5e97f2dda3408_2.zip) of the neighborhood boundaries with their identities.
-
-### Project
-
 Each of these files is available in the "data" folder above. Our workflow will involve:
 
 - Importing the neighborhood boundaries, and importing and wrangling the collisions data to extract collisions in 2018
@@ -46,6 +35,11 @@ Each of these files is available in the "data" folder above. Our workflow will i
 The result will produce a simple chloropleth map differentiating the count of the collisions across neighborhoods in Seattle.
 
 ## Importing and Wrangling Data
+
+The data I will be using is available from the [City of Seattle](https://data.seattle.gov/), which has made great strides in [Open Data practices](http://www.seattle.gov/tech/initiatives/open-data). To begin, I will use:
+
+- [Vehicle collisions data](https://data.seattle.gov/Transportation/Collisions/vac5-r8kk), which is available as [.csv file](http://data-seattlecitygis.opendata.arcgis.com/datasets/5b5c745e0f1f48e7a53acec63a0022ab_0.csv).
+- [City Clerk data on the neighborhoods of Seattle](https://data.seattle.gov/dataset/City-Clerk-Neighborhoods/926y-cwh9), specifically the [shapefile](http://data-seattlecitygis.opendata.arcgis.com/datasets/b76cdd45f7b54f2a96c5e97f2dda3408_2.zip) of the neighborhood boundaries with their identities.
 
 We will import all the libraries we need:
 ```
