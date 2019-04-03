@@ -1,18 +1,9 @@
 ---
 layout: page
-title: About
+title: Michael Johnduff
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+![Profile](https://avatars2.githubusercontent.com/u/18341816?s=400&u=b47f683b68fa517682bdaeab9df4dead4bf0b01b&v=4)
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
-
-
-[jekyll-organization]: https://github.com/jekyll
+I am an urban policy analyst and planner with a deep interest in data science and evidence-based policy. Contact me at [michaeljoseph1604@gmail.com](mailto:michaeljoseph1604@gmail.com), on Twitter at [mjjii](http://twitter.com/mjjii), or on [LinkedIn](https://www.linkedin.com/in/michael-joseph-crp/).
