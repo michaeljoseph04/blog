@@ -9,6 +9,8 @@ categories: Project
 
 ![map-3-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/map-3-cars.jpeg)
 
+# Introduction
+
 As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. But there are few introductions to the types of user cases which are common in this area. This brief walkthrough and the accompanying code should guide readers through some of this territory, with the help of using [simple features](https://r-spatial.github.io/sf/) spatial data format. I will leave most GIScience and spatial analysis for future introductions. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis. Eventually, this work will migrate to a website and be featured in post form, but for now it is here.
 
 In this introduction I'll cover:
@@ -21,7 +23,7 @@ In this introduction I'll cover:
 
 More advanced operations may be added in the future.
 
-# Data
+## Data to be used
 The data I will be using is available from the [City of Seattle](https://data.seattle.gov/), which has made great strides in [Open Data practices](http://www.seattle.gov/tech/initiatives/open-data). To begin, I will use:
 
 - [Vehicle collisions data](https://data.seattle.gov/Transportation/Collisions/vac5-r8kk), which is available as [.csv file](http://data-seattlecitygis.opendata.arcgis.com/datasets/5b5c745e0f1f48e7a53acec63a0022ab_0.csv).
@@ -285,8 +287,8 @@ s_popcars <- s_acs %>%
   select(-moe) %>%
   spread(key=variable, value=estimate) %>%
   rename(total=B08141_001, nocars=B08141_002, threecars="B08141_005") %>%
-  mutate(pctcars = (total-nocars)/total) %>% #take the total-no cars to get number with cars
-  mutate(pctnocars = nocars/total)%>%
+  mutate(pctcars = (total-nocars)/total) %>%
+  mutate(pctnocars = nocars/total) %>%
   mutate(pctthreecars = threecars/total)
 ```
 Now that we have that complete, we can make the join to the previous data which had census tracts, and keep all we need with `select()`:
@@ -374,11 +376,14 @@ So, most fundamentally, we must go back to the basic assumption behind much of t
 
 As you can see, you can do these common GIS operations rather easily. The only additional thing we may want to do, for now, is write our manipulated data to a shapefile with a simple call to `write_sf()`:
 ```
-write_sf(neighborhood_collisions, "project/data/neighborhood_collisions.shp", delete_layer = TRUE)
+write_sf(neighborhood_collisions,
+  "project/data/neighborhood_collisions.shp",
+  delete_layer = TRUE)
 ```
 And our joined US Census Data:
 ```
-write_sf(s_cars, "project/data/s_cars.shp", delete_layer = TRUE)
+write_sf(s_cars, "project/data/s_cars.shp",
+  delete_layer = TRUE)
 ```
 
 There even more things we can do with everything we've done now within R. I will have further introductions to spatial analysis with these workflows in the future.
