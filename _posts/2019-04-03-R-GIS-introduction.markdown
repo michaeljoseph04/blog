@@ -54,7 +54,7 @@ We can immediately map the file with ggplot to see what looks like:
 ggplot() +
   geom_sf(data = neighborhoods)
 ```
-![plot1](/tree/gh-pages/_site-images/plot1.jpeg)
+![plot1](https://github.com/michaeljoseph04/blog/tree/gh-pages/_posts/_site-images/plot1.jpeg)
 
 And we can see with `head()` what the data looks like:
 ```
