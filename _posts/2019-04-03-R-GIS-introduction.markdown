@@ -7,7 +7,7 @@ categories: Project
 
 *An introduction to using R as a GIS for urban spatial analysis*
 
-![map-3-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/map-0-cars.jpeg)
+![map-3-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/map-3-cars.jpeg)
 
 As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. But there are few introductions to the types of user cases which are common in this area. This brief walkthrough and the accompanying code should guide readers through some of this territory, with the help of using [simple features](https://r-spatial.github.io/sf/) spatial data format. I will leave most GIScience and spatial analysis for future introductions. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis. Eventually, this work will migrate to a website and be featured in post form, but for now it is here.
 
@@ -56,7 +56,7 @@ We can immediately map the file with ggplot to see what looks like:
 ggplot() +
   geom_sf(data = neighborhoods)
 ```
-![plot1](/images/plot1.jpeg)
+![plot1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot1.jpeg)
 
 And we can see with `head()` what the data looks like:
 ```
@@ -112,7 +112,7 @@ We can plot the result. This takes a little while with ggplot given the size of 
 ggplot() +
   geom_sf(data=collisions_sf, alpha=.3)
 ```
-![plot5](/images/plot5.jpeg)
+![plot5](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot5.jpeg)
 
 # Spatially Joining the Data
 
@@ -175,7 +175,7 @@ ggplot() +
   theme(axis.ticks.x = element_blank()) +
   theme(axis.ticks.y = element_blank())
   ```
-  ![plot6](/images/plot6.jpeg)
+  ![plot6](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot6.jpeg)
 
 However, a common operation would be not plotting just the count but the count per area. The City Clerk neighborhood's file has this already calculated in square feet in the *AREA* field and so a simple change of the `fill` argument to `collisions_n/AREA` will plot the collisions per sq.ft., a more accurate and informative chloropleth map. If we wanted to make the calculation ourself, however, `st_area()` in `sf` allows us to do this (with the help of the `lgeom` package, which must be loaded), and the `units` package to convert the result, which is in square meters, to square feet. We then simply add this variable (after converting it to a decimal result) to our data (we can just use `$`) and use `mutate` to add another variable which would be the collisions per square foot. This then can be used for plotting the more accurate map:
 ```
@@ -201,7 +201,7 @@ ggplot()+
     theme(axis.ticks.x = element_blank()) +
     theme(axis.ticks.y = element_blank())
   ```
-  ![plotF](/images/plotF.jpeg)
+  ![plotF](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plotF.jpeg)
 
 # Other Operations: Joins and the Census
 
@@ -220,7 +220,7 @@ s_city <- neighborhoods %>%
   summarize()
 ```
 The result is what you would expect, a dissolved polygon:
-![plot7](/images/plot7.jpeg)
+![plot7](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot7.jpeg)
 
 Now, let's get the census tracts. We can set the environment so that we download simple features data with the tigris package, and put it in the cache as we work (rather than download it to a directory). Then with a call to `tracts()` we download the county data (specifying cb as true for a simpler geometry, rather than a 500k resolution geometry):
 ```
@@ -237,10 +237,10 @@ s_city_tracts <- s_tracts[s_city,]
 
 ```
 Plotting this shows us the census tracts:
-![plot8](/images/plot8.jpeg)
+![plot8](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot8.jpeg)
 
 The shape is slightly different because some of the tracts share edges with the border of the city. We can clean this if we want, but for now let's just move on. Because immediately we can then go about all of the spatial joining to the census tracts just as we did above, and the calculations for density by the tract's area in square feet. This gives us another detailed map when we plot it:
-![plotTract](/images/plotTract.jpeg)
+![plotTract](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plotTract.jpeg)
 
 Now we can fetch data from the Census and look for spatial correlations (which, as in this example, might be tenuous), or simply research using the Census data with the addition of the data we joined.
 
@@ -307,7 +307,7 @@ ggplot(s_cars, aes(x=cars/areas, y=collisions_sqft)) +
   scale_y_continuous(labels=comma)+
   theme_classic()
 ```
-![plot-cars](/images/plot-cars.jpeg)
+![plot-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot-cars.jpeg)
 
 Now let's look at collision density vs. the density of households without cars:
 ```
@@ -323,13 +323,13 @@ ggplot(s_cars, aes(x=nocars/areas, y=collisions_sqft)) +
   theme_classic()
 ```
 
-![plot-0-cars](/images/plot-0-cars.jpeg)
+![plot-0-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot-0-cars.jpeg)
 
 We could continue to explore the data in this way, and build better models using other Census data. This, and the changing of the geographies, is essentially how transportation planners have constructed [Traffic Analysis Zones](https://en.wikipedia.org/wiki/Traffic_analysis_zone), and how they document trends concerning them. However, by way of bringing this to a close, we should note how little we have modeled to produce these results compared to more sophisticated transportation planning analyses, and, especially, how little there is a basis for concluding anything about the relationship between collisions and the mode of travel in each census tract.
 
 Let's be clear: our initial exploration of trends appears to show that we have positive relationship between collisions per square foot and the density of households with cars. But this relationship is still very unclear. We see this from comaring first plot to our second, which, while showing a steeper positive relationship also, has less frequency of collisions as the density of households with no cars available increases. One might conclude there is not really a realtionship between the number of collisions and the number of households with cars available from this data. In fact, if we plot our third census variable, we could come up with the opposite idea: that neighborhoods with more cars available have lower collision density!
 
-![plot-3-cars](/images/plot-3-cars.jpeg)
+![plot-3-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot-3-cars.jpeg)
 
 This is not to introduce skepticism concerning our work, just to make clear that they are not results, but moments in the *data exploration* phase, useful to building a more robust model. This is immediately explained by mapping households with no cars available and with three or more cars, which is something now completely familiar to us:
 ```
@@ -347,7 +347,7 @@ ggplot()+
   theme(axis.ticks.y = element_blank())
 ```
 
-![map-0-cars](/images/map-0-cars.jpeg)
+![map-0-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/map-0-cars.jpeg)
 
 ```
 ggplot()+
@@ -364,7 +364,7 @@ ggplot()+
     theme(axis.ticks.y = element_blank())
 ```
 
-![map-3-cars](/images/map-3-cars.jpeg)
+![map-3-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/map-3-cars.jpeg)
 
 Clearly, the relationship of collisions and households has to do with larger patterns in the urban form, including the walkability and bikability of the city, and also the sheer amount of activity within the core versus many of the outer neighborhoods (which might account for collisions showing a negative relationship with households with 3+ cars available). While we have accounted for some of this by using densities rather than counts, we have not at all considered the density of traffic or interactions between travelers, and the differences in available modes as a function of the differences in the infrastructure.
 
