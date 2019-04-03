@@ -17,7 +17,7 @@ title: Urban Data Analysis
 email: michaeljoseph1604@gmail.com
 description: Urban data analysis - issues and examples from my work
 baseurl: /blog # the subpath of your site, e.g. /blog
-url: http://michaeljoseph04.github.io/blog/ # the base hostname & protocol for your site, e.g. http://example.com
+url: -> # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: mjjii
 github_username:  michaeljoseph04
 
