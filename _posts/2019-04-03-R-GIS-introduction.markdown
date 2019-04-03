@@ -110,7 +110,7 @@ collisions_sf <- st_as_sf(collisions,
                    crs = s_crs,
                    remove = F)
 ```
-We can plot the result. This takes a little while with ggplot given the size of the data frame. I have change the alpha of the points to make their frequency easier to display:
+We can plot the result. This takes a little while with ggplot given the size of the data frame. I have changed the alpha transparency of the points to make their frequency easier to display:
 ```
 ggplot() +
   geom_sf(data=collisions_sf, alpha=.3)
@@ -239,10 +239,12 @@ s_tracts <- st_transform(s_tracts, crs=s_crs)
 s_city_tracts <- s_tracts[s_city,]
 
 ```
-Plotting this shows us the census tracts:
+Plotting this shows us the census tracts overlaying our dissolved city limits poligone.
 ![plot8](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot8.jpeg)
 
-The shape is slightly different because some of the tracts share edges with the border of the city. We can clean this if we want, but for now let's just move on. Because immediately we can then go about all of the spatial joining to the census tracts just as we did above, and the calculations for density by the tract's area in square feet. This gives us another detailed map when we plot it:
+The shape is slightly different because some of the tracts share edges with the border of the city, and so were not left out when we subsetted the data. We can clean this if we want in two ways: either we can go back and, instead of subsetting the tracts by what is intersecting with the city border, we can do a join specifying that only areas *within* the city borders will be kept. Or, because the data is simple features data and works like a table, we can simply look in the tracts and drop the cases which include the tracts outside the border. For simplicity's sake, I'll do the latter in the following analyses.
+
+Once we do this, we can then go about all of the spatial joining to the census tracts just as we did above, and the calculations for density by the tract's area in square feet. This gives us another detailed map when we plot it:
 ![plotTract](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plotTract.jpeg)
 
 Now we can fetch data from the Census and look for spatial correlations (which, as in this example, might be tenuous), or simply research using the Census data with the addition of the data we joined.
