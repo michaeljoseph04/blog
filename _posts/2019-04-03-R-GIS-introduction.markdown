@@ -7,7 +7,7 @@ categories: Project
 
 *An introduction to using R as a GIS for urban spatial analysis*
 
-![map-3-cars](blog/images/map-3-cars.jpeg)
+![map-3-cars](/blog/images/map-3-cars.jpeg)
 
 As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. But there are few introductions to the types of user cases which are common in this area. This brief walkthrough and the accompanying code should guide readers through some of this territory, with the help of using [simple features](https://r-spatial.github.io/sf/) spatial data format. I will leave most GIScience and spatial analysis for future introductions. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis. Eventually, this work will migrate to a website and be featured in post form, but for now it is here.
 
