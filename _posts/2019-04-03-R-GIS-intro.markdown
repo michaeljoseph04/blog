@@ -1,15 +1,13 @@
 ---
 layout: post
-title:  "Introduction"
+title:  "Introduction to R as a GIS"
 date:   2019-04-03 09:43:00 -0700
-categories: Introduction
+categories: Project
 ---
 
-## GIS in R with sf and US Census data
+*An introduction to using R as a GIS for urban spatial analysis*
 
-*An introduction to using R as a GIS for urban spatial analysts*
-
-As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. But there are few introductions to the types of analyses which are common and useful in this area. This brief walkthrough and the accompanying code should guide readers through some of this territory, with the help of using the simple features (`sf`) package for spatial data. I will leave most GIScience and spatial analysis for future introductions. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis. Eventually, this work will migrate to a website and be featured in post form, but for now it is here.
+As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. But there are few introductions to the types of user cases which are common in this area. This brief walkthrough and the accompanying code should guide readers through some of this territory, with the help of using [simple features](https://r-spatial.github.io/sf/) spatial data format. I will leave most GIScience and spatial analysis for future introductions. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis. Eventually, this work will migrate to a website and be featured in post form, but for now it is here.
 
 In this introduction I'll cover:
 
@@ -28,6 +26,7 @@ The data I will be using is available from the [City of Seattle](https://data.se
 - [City Clerk data on the neighborhoods of Seattle](https://data.seattle.gov/dataset/City-Clerk-Neighborhoods/926y-cwh9), specifically the [shapefile](http://data-seattlecitygis.opendata.arcgis.com/datasets/b76cdd45f7b54f2a96c5e97f2dda3408_2.zip) of the neighborhood boundaries with their identities.
 
 Each of these files is available in the "data" folder above. Our workflow will involve:
+
 - Importing the neighborhood boundaries, and importing and wrangling the collisions data to extract collisions in 2018
 - Joining the collisions to the neighborhood boundaries
 - Creating a summary (specifically, a count) of the number of collisions in each neighborhood
