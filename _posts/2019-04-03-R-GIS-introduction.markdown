@@ -345,7 +345,7 @@ ggplot()+
   theme(axis.ticks.y = element_blank())
 ```
 
-![map-0-cars](_posts/_site-images/map-0-cars.jpeg)
+![map-0-cars](/_posts/_site-images/map-0-cars.jpeg)
 
 ```
 ggplot()+
