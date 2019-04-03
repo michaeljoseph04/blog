@@ -345,7 +345,7 @@ ggplot()+
   theme(axis.ticks.y = element_blank())
 ```
 
-![map-0-cars](/_posts/_site-images/map-0-cars.jpeg)
+![map-0-cars](/assets/_site-images/map-0-cars.jpeg)
 
 ```
 ggplot()+
@@ -362,7 +362,7 @@ ggplot()+
     theme(axis.ticks.y = element_blank())
 ```
 
-![map-3-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/tree/gh-pages/_posts/_site-images/map-3-cars.jpeg)
+![map-3-cars](/assets/_site-images/map-3-cars.jpeg)
 
 Clearly, the relationship of collisions and households has to do with larger patterns in the urban form, including the walkability and bikability of the city, and also the sheer amount of activity within the core versus many of the outer neighborhoods (which might account for collisions showing a negative relationship with households with 3+ cars available). While we have accounted for some of this by using densities rather than counts, we have not at all considered the density of traffic or interactions between travelers, and the differences in available modes as a function of the differences in the infrastructure.
 
