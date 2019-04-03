@@ -9,7 +9,7 @@ categories: Project
 
 ![map-3-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/map-3-cars.jpeg)
 
-# Introduction
+### Introduction
 
 ## Overview
 
@@ -34,7 +34,7 @@ The data I will be using is available from the [City of Seattle](https://data.se
 - [Vehicle collisions data](https://data.seattle.gov/Transportation/Collisions/vac5-r8kk), which is available as [.csv file](http://data-seattlecitygis.opendata.arcgis.com/datasets/5b5c745e0f1f48e7a53acec63a0022ab_0.csv).
 - [City Clerk data on the neighborhoods of Seattle](https://data.seattle.gov/dataset/City-Clerk-Neighborhoods/926y-cwh9), specifically the [shapefile](http://data-seattlecitygis.opendata.arcgis.com/datasets/b76cdd45f7b54f2a96c5e97f2dda3408_2.zip) of the neighborhood boundaries with their identities.
 
-# Project
+### Project
 
 Each of these files is available in the "data" folder above. Our workflow will involve:
 
@@ -379,7 +379,7 @@ Clearly, the relationship of collisions and households has to do with larger pat
 
 So, most fundamentally, we must go back to the basic assumption behind much of the exploration we have already done, and consider whether looking at demographic data based on one or two variables about census tracts can tell us anything remotely about collisions at all in the areas of the city where they appear (we also must consider collisions which emerge not because of local interactions, but interactions between local and non-local travelers). Again, this is not to undermine our faith in the data, just to underline the need for much more data exploration in order to build a model. What is encouraging is that model building, as every one dealing with these types of data know, is an iterative process: I hope that the tools above help make the phases of data exploration much easier to accomplish.
 
-# Conclusions
+### Conclusions
 
 As you can see, you can do these common GIS operations rather easily. The only additional thing we may want to do, for now, is write our manipulated data to a shapefile with a simple call to `write_sf()`:
 ```
