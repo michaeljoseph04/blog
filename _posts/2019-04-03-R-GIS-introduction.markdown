@@ -11,23 +11,30 @@ categories: Project
 
 # Introduction
 
-As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. But there are few introductions to the types of user cases which are common in this area. This brief walkthrough and the accompanying code should guide readers through some of this territory, with the help of using [simple features](https://r-spatial.github.io/sf/) spatial data format. I will leave most GIScience and spatial analysis for future introductions. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis. Eventually, this work will migrate to a website and be featured in post form, but for now it is here.
+## Overview
 
-In this introduction I'll cover:
+As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. But there are few introductions to the types of user cases which are common in this area. This brief walkthrough and the accompanying code should guide readers through some of this territory. Check out the [repo] which has the code for this. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis.
 
-- Importing spatial data into R
+In this introduction I'll cover mostly data wrangling and initial exploration of some spatial datasets, and how to bring them into relationship with well-established datasets which may already be around, like US Census data. This is a common task for which we use GIS: we have a set of events which are geolocated, and we want to look at these events in relationship to their context. But not only do certain packages in R--particularly [simple features](https://r-spatial.github.io/sf/) spatial data--make all that work faster and easier, they also bring handling spatial data work within the flows of familiar data analysis tasks.
+
+I will cover, then, several aspects of relating spatial data to their context:
+
+- Importing spatial data
 - Performing a spatial join
 - Visualizing spatial data
-- Other spatial operations (a dissolve) and joining to US Census tracts
+- Other operations (a dissolve) and joining to US Census tracts
 - Looking for trends with US Census data
 
-More advanced operations may be added in the future.
+Again, these are basic operations; in future posts I'll explore spatial analysis proper, and deriving actual conclusions from the data. Be sure to go to the project [repository](https://github.com/michaeljoseph04/gis_intro) to find the code.
 
 ## Data to be used
+
 The data I will be using is available from the [City of Seattle](https://data.seattle.gov/), which has made great strides in [Open Data practices](http://www.seattle.gov/tech/initiatives/open-data). To begin, I will use:
 
 - [Vehicle collisions data](https://data.seattle.gov/Transportation/Collisions/vac5-r8kk), which is available as [.csv file](http://data-seattlecitygis.opendata.arcgis.com/datasets/5b5c745e0f1f48e7a53acec63a0022ab_0.csv).
 - [City Clerk data on the neighborhoods of Seattle](https://data.seattle.gov/dataset/City-Clerk-Neighborhoods/926y-cwh9), specifically the [shapefile](http://data-seattlecitygis.opendata.arcgis.com/datasets/b76cdd45f7b54f2a96c5e97f2dda3408_2.zip) of the neighborhood boundaries with their identities.
+
+# Project
 
 Each of these files is available in the "data" folder above. Our workflow will involve:
 
@@ -38,7 +45,7 @@ Each of these files is available in the "data" folder above. Our workflow will i
 
 The result will produce a simple chloropleth map differentiating the count of the collisions across neighborhoods in Seattle.
 
-# Importing and Wrangling Data
+## Importing and Wrangling Data
 
 We will import all the libraries we need:
 ```
@@ -116,7 +123,7 @@ ggplot() +
 ```
 ![plot5](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot5.jpeg)
 
-# Spatially Joining the Data
+## Spatially Joining the Data
 
 Now we can join the data. I use `st_join` to specify a spatial join, and also specify that we want the *collisions_sf* shape joined to the *neighborhoods* shape. I will also make clear that I want all the collisions completely within the neighborhoods to be joined (this can be modified to include any of the usual qualities, including intersecting, touching, etc.):
 ```
@@ -133,7 +140,7 @@ x        y OBJECTID PERIMETER            S_HOOD           ...
 6 -122.3050 47.60217       55  18241.55             Minor ...
 ```
 
-# Summarizing the Data
+## Summarizing the Data
 Now we want to count how many crashes are within the each neighborhood, and visualize the result. Since the `sf` objects are data frames, this operation can be done simply by summarizing the data as one would normally do with the `group_by()` and `summarize()` workflow of `dplyr`, here `group_by()`, which will be set to the *S_HOOD* variable and `count()` (a quick call to just `count()` would have been sufficient, but I wanted to specify the variable name for future reference.)
 
 The only additional step I have to consider in this operation is that we have to set aside the geometry data which attaches to each case of the spatial data, in order to perform the count. Freed of the geometries, we can then re-attach them by joining them the back to the original *neighborhoods* dataset. To do this, I then make a quick call to `as.data.frame()` before peforming the grouping and summarizing:
@@ -156,7 +163,7 @@ S_HOOD          collisions_n
 ```
 (As an aside, this detaching and re-attaching geometries here has to be done because `sf` can't yet join spatial objects to spatial objects directly. But as you can see, it  makes intuitive sense from within the workflow to see geometry data as "sticky": the workflow is from extracting and manipulating the spatial data *variables* like any other tidy data, then joining the variables back to the data they came from, when they want to be used in context with all the other variables. The `sf` workflow just allows the geometries to unstick and stick back on when we want them.)
 
-# Visualizing
+## Visualizing
 As mentioned above, we have to join the count data back to the original neighborhood data in order to see it in context with the rest of the variables. Just as in any GIS interface, there's no need for any spatial joins here at all, but just a joining of the data: `sf` lets me just do this with a simple `left_join()` on the *S_HOOD* variable.
 ```
 neighborhood_collisions <- left_join(neighborhoods,
@@ -205,7 +212,7 @@ ggplot()+
   ```
   ![plotF](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plotF.jpeg)
 
-# Other Operations: Joins and the Census
+## Other Operations: Joins and the Census
 
 We can also perform another common operation, which is to join this data to census tracts. In what follows, we will use the `tigris` package.
 
@@ -246,7 +253,7 @@ The shape is slightly different because some of the tracts share edges with the 
 
 Now we can fetch data from the Census and look for spatial correlations (which, as in this example, might be tenuous), or simply research using the Census data with the addition of the data we joined.
 
-#Looking for Trends with Census Data
+## Looking for Trends with Census Data
 
 We can download Census data with the `acs` package, and Kyle Walker's handy `tidycensus`, which uses `acs`. `acs`, a beautiful package developed for planners and urban spatial analysts by the data team of Puget Sound Regional Council, requires an API key, which can be obtained easily [from the U.S. Census Bureau](https://api.census.gov/data/key_signup.html). See `help(package="acs")` for instructions on how to set this up easily, with a quick use of `api.key.install(key="YOUR API KEY")`. `tidycensus` uses `acs` but makes the process even easier by returning fetched data directly as tidy data frames. It also works well to join census data directly to simple feature geometries, so we will be fetching this. So, our workflow will look like this:
 
