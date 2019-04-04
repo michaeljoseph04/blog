@@ -251,7 +251,7 @@ s_city_tracts <- s_tracts[s_city,]
 Plotting this shows us the census tracts overlaying our dissolved city limits polygon.
 ![city_tracts_big](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/city_tracts_big.jpeg)
 
-Now there is a problem which will produce a need for some further data wrangling. Some of the tracts share edges with the border of the city, and so were not left out when we subsetted the data. We can clean this if we want in two ways: either we can go back and, instead of subsetting the tracts by what is intersecting with the city border, we can do a join specifying that only areas *within* the city borders will be kept. Or, because the data is simple features data and works like a table, we can simply look in the tracts and drop the cases which include the tracts outside the border. For simplicity's sake, I'll do the latter, though it is time-intensive, because it shows another great feature of dealing with simple feature data, which is that `ggplot` can immediately label things for you with a call to `geom_sf_text()` or `geom_sf_label()`. We'll use the latter, with the *TRACTCE* variable, which will show tract numbers. We can then subset based on that:
+Now there is a problem which will produce a need for some further data wrangling. Some of the tracts share edges with the border of the city, and so were not left out when we subsetted the data. We can clean this if we want in two ways: either we can go back and, instead of subsetting the tracts by what is intersecting with the city border, we can do a join specifying that only areas *within* the city borders will be kept. This may, however, not work exactly if you have overlapping files (in our case, we do, because we are using different jurisdictional borders--this case appears often when using city boundaries). Alternatively, because the data is simple features data and works like a table, we can simply look in the tracts and drop the cases which include the tracts outside the border. The tradeoff with the latter approach is that it is only really useful where small amounts of tracts need to be excluded: it isn't practical for large datasets. For simplicity's sake, however, I'll do the latter, though it is time-intensive, because it shows another great feature of dealing with simple feature data, which is that `ggplot` can immediately label things for you with a call to `geom_sf_text()` or `geom_sf_label()`. We'll use the latter, with the *TRACTCE* variable, which will show tract numbers. We can then subset based on that:
 ```
 ggplot(data=s_city_tracts) +
   geom_sf(data=s_city, fill="grey",color=NA)+
@@ -265,7 +265,7 @@ s_city_tracts <- s_city_tracts %>%
                           "026700","026600", "026300", "026001"))
 
 ```
-Once we do this, we have a proper set of data to work with.
+Once we do this, we have the set of data we want to work with.
 
 ![tracts_final](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/tracts_final.jpeg)
 
