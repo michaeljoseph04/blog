@@ -9,9 +9,9 @@ categories: Project
 
 ![map-3-cars](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/map-3-cars.jpeg)
 
-## Overview
+## 1.1 Overview
 
-As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. But there are few introductions to the types of user cases which are common in this area. This brief walkthrough and the accompanying code should guide readers through some of this territory. Check out the [repo] which has the code for this. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis.
+As an urban policy analyst and planner, I have to do a lot of analysis of spatial data. Over the last few years R has become a great way to do many of the basic tasks which would normally be done in QGIS or ArcGIS, and then link them to its powerful statistical tools. But as I've learned R as a GIS, I've noticed there are few introductions for the types of user cases which are common in my field. This brief walkthrough and the accompanying code should guide readers through some of this territory. My primary aim is clarity in these introductions, and at the same time demonstrating the workflows most optimal for data analysis.
 
 In this introduction I'll cover mostly data wrangling and initial exploration of some spatial datasets, and how to bring them into relationship with well-established datasets which may already be around, like US Census data. This is a common task for which we use GIS: we have a set of events which are geolocated, and we want to look at these events in relationship to their context. But not only do certain packages in R--particularly [simple features](https://r-spatial.github.io/sf/) spatial data--make all that work faster and easier, they also bring handling spatial data work within the flows of familiar data analysis tasks.
 
@@ -34,7 +34,7 @@ Each of these files is available in the "data" folder above. Our workflow will i
 
 The result will produce a simple chloropleth map differentiating the count of the collisions across neighborhoods in Seattle.
 
-## Importing and Wrangling Data
+## 1.2 Importing and Wrangling Data
 
 The data I will be using is available from the [City of Seattle](https://data.seattle.gov/), which has made great strides in [Open Data practices](http://www.seattle.gov/tech/initiatives/open-data). To begin, I will use:
 
@@ -117,7 +117,7 @@ ggplot() +
 ```
 ![plot5](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot5.jpeg)
 
-## Spatially Joining the Data
+## 1.3 Spatially Joining the Data
 
 Now we can join the data. I use `st_join` to specify a spatial join, and also specify that we want the *collisions_sf* shape joined to the *neighborhoods* shape. I will also make clear that I want all the collisions completely within the neighborhoods to be joined (this can be modified to include any of the usual qualities, including intersecting, touching, etc.):
 ```
@@ -134,7 +134,7 @@ x        y OBJECTID PERIMETER            S_HOOD           ...
 6 -122.3050 47.60217       55  18241.55             Minor ...
 ```
 
-## Summarizing the Data
+## 1.4 Summarizing the Data
 Now we want to count how many crashes are within the each neighborhood, and visualize the result. Since the `sf` objects are data frames, this operation can be done simply by summarizing the data as one would normally do with the `group_by()` and `summarize()` workflow of `dplyr`, here `group_by()`, which will be set to the *S_HOOD* variable and `count()` (a quick call to just `count()` would have been sufficient, but I wanted to specify the variable name for future reference.)
 
 The only additional step I have to consider in this operation is that we have to set aside the geometry data which attaches to each case of the spatial data, in order to perform the count. Freed of the geometries, we can then re-attach them by joining them the back to the original *neighborhoods* dataset. To do this, I then make a quick call to `as.data.frame()` before peforming the grouping and summarizing:
@@ -157,7 +157,7 @@ S_HOOD          collisions_n
 ```
 (As an aside, this detaching and re-attaching geometries here has to be done because `sf` can't yet join spatial objects to spatial objects directly. But as you can see, it  makes intuitive sense from within the workflow to see geometry data as "sticky": the workflow is from extracting and manipulating the spatial data *variables* like any other tidy data, then joining the variables back to the data they came from, when they want to be used in context with all the other variables. The `sf` workflow just allows the geometries to unstick and stick back on when we want them.)
 
-## Visualizing
+## 1.5 Visualizing
 As mentioned above, we have to join the count data back to the original neighborhood data in order to see it in context with the rest of the variables. Just as in any GIS interface, there's no need for any spatial joins here at all, but just a joining of the data: `sf` lets me just do this with a simple `left_join()` on the *S_HOOD* variable.
 ```
 neighborhood_collisions <- left_join(neighborhoods,
@@ -206,7 +206,7 @@ ggplot()+
   ```
   ![plotF](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plotF.jpeg)
 
-## Other Operations: Joins and the Census
+## 1.6 Other Operations: Joins and the Census
 
 We can also perform another common operation, which is to join this data to census tracts. In what follows, we will use the `tigris` package.
 
@@ -233,25 +233,50 @@ options(tigris_class = "sf")
 options(tigris_use_cache = TRUE)
 s_tracts <- tracts(state="WA", county="King", cb=TRUE)
 ```
-Next, we transform the tracts *sf* from its coordinate reference system into the reference system used by the Seattle census tracts, and then extract the census tracts which overlap with the city boundaries by simply subsetting one to the other:
+You can check if the census tracts are all `sf` objects by way of `st_is_valid`, which will check each polygon and return *TRUE* or *FALSE*, depending. Wrapping that in base R's `all()`, which checks if all values are true--as in `all(st_is_valid(s_tracts))`--returns *TRUE*.
+
+Next, we transform the tracts *sf* from its coordinate reference system into the reference system used by the Seattle census tracts:
 ```
 s_tracts <- st_transform(s_tracts, crs=s_crs)
+```
+ And then extract the census tracts which overlap with the city boundaries by simply subsetting one to the other. We can do this two ways. First, we proceed with a `filter()` which would keep everything in the *s_tracts* spatial data frame which did not intersect with the city boundaries. This is possible with `st_intersect`, which checks for exactly this, then returning the `length()` of the result, which is *0* or *1*. We want to keep everything greater than *0*, so we then pass this to `filter()`:
+```
+s_city_tracts <- s_tracts %>% filter(lengths(st_intersects(s_tracts, s_city)) > 0)
+```
+Alternatively, and as some have pointed out, we can just perform this clip just as if we were subsetting one dataframe by another, as we would normally do:
+```
 s_city_tracts <- s_tracts[s_city,]
 
 ```
-Plotting this shows us the census tracts overlaying our dissolved city limits poligone.
-![plot8](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plot8.jpeg)
+Plotting this shows us the census tracts overlaying our dissolved city limits polygon.
+![city_tracts_big](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/city_tracts_big.jpeg)
 
-The shape is slightly different because some of the tracts share edges with the border of the city, and so were not left out when we subsetted the data. We can clean this if we want in two ways: either we can go back and, instead of subsetting the tracts by what is intersecting with the city border, we can do a join specifying that only areas *within* the city borders will be kept. Or, because the data is simple features data and works like a table, we can simply look in the tracts and drop the cases which include the tracts outside the border. For simplicity's sake, I'll do the latter in the following analyses.
+Now there is a problem which will produce a need for some further data wrangling. Some of the tracts share edges with the border of the city, and so were not left out when we subsetted the data. We can clean this if we want in two ways: either we can go back and, instead of subsetting the tracts by what is intersecting with the city border, we can do a join specifying that only areas *within* the city borders will be kept. Or, because the data is simple features data and works like a table, we can simply look in the tracts and drop the cases which include the tracts outside the border. For simplicity's sake, I'll do the latter, though it is time-intensive, because it shows another great feature of dealing with simple feature data, which is that `ggplot` can immediately label things for you with a call to `geom_sf_text()` or `geom_sf_label()`. We'll use the latter, with the *TRACTCE* variable, which will show tract numbers. We can then subset based on that:
+```
+ggplot(data=s_city_tracts) +
+  geom_sf(data=s_city, fill="grey",color=NA)+
+  geom_sf(fill=NA, color="black")+
+  geom_sf_text(aes(label=TRACTCE))
 
-Once we do this, we can then go about all of the spatial joining to the census tracts just as we did above, and the calculations for density by the tract's area in square feet. This gives us another detailed map when we plot it:
-![plotTract](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/plotTract.jpeg)
+
+s_city_tracts <- s_city_tracts %>%
+  filter(! TRACTCE %in% c("020900", "021000",
+                          "021100", "021300", "026400", "026100",
+                          "026700","026600", "026300", "026001"))
+
+```
+Once we do this, we have a proper set of data to work with.
+
+![tracts_final](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/tracts_final.jpeg)
+
+We can then go about all of the spatial joining to the census tracts just as we did above, and the calculations for density by the tract's area in square feet. This gives us another detailed map when we plot it:
+![collision_density_final](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/collision_density_final.jpeg)
 
 Now we can fetch data from the Census and look for spatial correlations (which, as in this example, might be tenuous), or simply research using the Census data with the addition of the data we joined.
 
-## Looking for Trends with Census Data
+## 1.7 Looking for Trends with Census Data
 
-We can download Census data with the `acs` package, and Kyle Walker's handy `tidycensus`, which uses `acs`. `acs`, a beautiful package developed for planners and urban spatial analysts by the data team of Puget Sound Regional Council, requires an API key, which can be obtained easily [from the U.S. Census Bureau](https://api.census.gov/data/key_signup.html). See `help(package="acs")` for instructions on how to set this up easily, with a quick use of `api.key.install(key="YOUR API KEY")`. `tidycensus` uses `acs` but makes the process even easier by returning fetched data directly as tidy data frames. It also works well to join census data directly to simple feature geometries, so we will be fetching this. So, our workflow will look like this:
+We can download Census data with the `acs` package, and [Kyle Walker's](https://walkerke.github.io/tidycensus/articles/basic-usage.html) handy `tidycensus`, which uses `acs`. `acs`, a beautiful package developed for planners and urban spatial analysts by the data team of Puget Sound Regional Council, requires an API key, which can be obtained easily [from the U.S. Census Bureau](https://api.census.gov/data/key_signup.html). See `help(package="acs")` for instructions on how to set this up easily, with a quick use of `api.key.install(key="YOUR API KEY")`. `tidycensus` uses `acs` but makes the process even easier by returning fetched data directly as tidy data frames. It also works well to join census data directly to simple feature geometries, so we will be fetching this. So, our workflow will look like this:
 
 - Fetch Census data
 - Wrangle for the kinds of data we want
@@ -260,7 +285,7 @@ We can download Census data with the `acs` package, and Kyle Walker's handy `tid
 
 First, let's fetch the data. We will be looking at a table familiar to many planners, [American Community Survey data table B08141](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk) on the means of transportation to work. It shows a breakdown of the various means of transportation for every census tract, and can be used to inform and justify policy decisions which would improve transportation planning in certain areas. What I want to see for the purposes of this introduction is something at once very basic and also complex: the varying degrees of car ownership of the households and the number of collisions per square foot. Notice that the table itself has many more demographic characteristics, including means of transportation to work: perhaps one of these may be better to use if we are looking at the relationship of collisions to the demography of neighborhoods. More on this later. For now, let's do the work of fetching the data.
 
-The data can be retrieved with  `tidycensus`'s' `get_acs()`. This assumes a little familarity with `acs()`, and I recommend looking at the latter more in depth to get a handle on exactly how to fetch data. But if you know how to work with Census data normally, the method is intuitive: you spend a lot of time making a geography for the data you want to retrieve, and then you specify the tables from which you want to fetch data, then usually wrangle it into a tidy data frame. `tidycensus` makes this even easier than `acs()`, and does this all in one go: in the arguments, you specify the geography of the data you want, the table, and where you want it from. What's more, it uses `tigris` just as we did above to append simple feature data to the geography, if you specify *TRUE* in the `geometry` argument. I am specifying *FALSE* because we already have that data:
+The data can be retrieved with  `tidycensus`'s' `get_acs()`. This assumes a little familiarity with `acs()`, and I recommend looking at the latter more in depth to get a handle on exactly how to fetch data. But if you know how to work with Census data normally, the method is intuitive: you spend a lot of time making a geography for the data you want to retrieve, and then you specify the tables from which you want to fetch data, then usually wrangle it into a tidy data frame. `tidycensus` makes this even easier than `acs()`, and does this all in one go: in the arguments, you specify the geography of the data you want, the table, and where you want it from. What's more, it uses `tigris` just as we did above to append simple feature data to the geography, if you specify *TRUE* in the `geometry` argument. I am specifying *FALSE* because we already have that data:
 
 ```
 library(tidycensus)
@@ -280,7 +305,7 @@ GEOID       NAME                                    variable   estimate   moe
 5 53033000100 Census Tract 1, King County, Washington B08141_005    1116.  371.
 6 53033000100 Census Tract 1, King County, Washington B08141_006    2224.  370.
 ```
-While `acs`'s `fetch()` returns a description of the variable, `tidycensus` assumes you are pretty certain of the variables you want. If you are uncertain of what you are looking for but know the table you want to look up, you can use `acs` or simply look at the table on the Census website to confirm: for example, *B08141_001* is the variable showing the total number of households in the tract, while *B08141_002* shows the total number with no vehicles available to travel to work, and *B08141_005* shows the total number with three cars or more available.
+While `acs`'s `acs.fetch()` returns a description of the variable, `tidycensus` assumes you are pretty certain of the variables you want. If you are uncertain of what you are looking for but know the table you want to look up, you can use `acs` or simply look at the table on the Census website to confirm: for example, *B08141_001* is the variable showing the total number of households in the tract, while *B08141_002* shows the total number with no vehicles available to travel to work, and *B08141_005* shows the total number with three cars or more available.
 
 What I will do next is use `dplyr` to filter for these three variables with the `%in%` operator, which looks within a string of characters where we place the three fields we want. Next, I drop the *moe* field, then `spread()` the data across three fields. This will turn the data frame from one which has variables arranged by census tract to one where each census tract has the three variable fields we want to consider (it can be undone with `gather()`). We can then use the latter to make calculations with `mutate()`, and specify the number of households with cars available, the number with no cars, and the number with three or more cars available, which we will later reduce to a density (per square foot of the census tract, a figure we already have):
 
@@ -375,7 +400,7 @@ Clearly, the relationship of collisions and households has to do with larger pat
 
 So, most fundamentally, we must go back to the basic assumption behind much of the exploration we have already done, and consider whether looking at demographic data based on one or two variables about census tracts can tell us anything remotely about collisions at all in the areas of the city where they appear (we also must consider collisions which emerge not because of local interactions, but interactions between local and non-local travelers). Again, this is not to undermine our faith in the data, just to underline the need for much more data exploration in order to build a model. What is encouraging is that model building, as every one dealing with these types of data know, is an iterative process: I hope that the tools above help make the phases of data exploration much easier to accomplish.
 
-### Conclusions
+## 1.8 Conclusions
 
 As you can see, you can do these common GIS operations rather easily. The only additional thing we may want to do, for now, is write our manipulated data to a shapefile with a simple call to `write_sf()`:
 ```
