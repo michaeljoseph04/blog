@@ -11,7 +11,9 @@ categories: Project
 
 ## 1.1 Overview
 
-Beginning to take data science methods and apply them to various urban policy questions can be useful, if only for exploratory analysis. While policy questions require more calibrated economic modeling, often we want some effective models to make adjustments to assumptions or to inform decisions. For this, the multiple linear regression is a useful tool, and the data science method of splitting data into training and test datasets works well to begin to build a model and learn more about the dataset. For instance, what factors go into sales sale prices? In this quick introduction, which draws from Brett Lantz's *Machine Learning with R*, I am going to do some basic multiple linear regression modeling to predict housing selling prices in R.
+Beginning to take data science methods and apply them to various urban policy questions can be useful, if only for exploratory analysis. While policy questions require more domain specific (that is, economic) modeling, often we want some effective models to begin to inform how our domain knowledge will fit with the work of generalizing from datasets--that is, the most useful reductions of the total number of possible models to the more domain-specific.
+
+For this still-exploratory work, multiple linear regression is a useful tool, as is the data science method of splitting data into training and test datasets. For instance, what factors go into house sale prices? In this quick introduction, which draws from the general outlook of Brett Lantz's *Machine Learning with R*, and several great walkthroughs emerging from a Kaggle competition using the dataset, I am going to show how to do some basic multiple linear regression modeling to predict housing selling prices in R.
 
 This will include:
 - Importing the dataset
@@ -19,26 +21,26 @@ This will include:
 - Fitting a model
 - Evaluating a model
 
-Be sure to go to the project [repository](https://github.com/michaeljoseph04/housing-prices) to find the code.
+Be sure to go to the project [repository](https://github.com/michaeljoseph04/housing-prices) to find the code. The analysis will work with one linear model, and then suggest ways that it can be integrated into further analysis
 
 ## 1.2 Importing and Wrangling Data
 
-The data I will be using is the famous Ames housing dataset, often used to teach data science. It is available from [Kaggle](https://www.kaggle.com/)
+The data I will be using is the famous Ames, Ohio housing dataset. This data is made of 79 variables about housing sales in Ames, Ohio. The variables range from square feet, to number of rooms, all the way to how big the bathrooms and garages are--even how many chimneys are available. It is similar to other data sets used by large companies like Zillow. It is available from [Kaggle](https://www.kaggle.com/)
 
 First, let's import the libraries we will need:
 ```
-  library(Hmisc)
   library(psych)
   library(car)
+  library(Hmisc)
   library(tidyverse)
 ```
-`psych` has useful tools for looking for relationships between variables. `car` is a regression modeling library.
+`psych` has useful tools for looking for relationships between variables, particularly the pair panel plot. The [Companion to Applied Regression](https://cran.r-project.org/web/packages/car/index.html) package, `car`, has all the tools I need for advanced regression. I like to load [Harrel Miscellaneous package](https://cran.r-project.org/web/packages/Hmisc/index.html) as well, which has many handy tools for data science.
 
 Next, I'll import the data, which I've saved to disk:
 ```
   sales <- read.csv("AmesHousing.csv", stringsAsFactors = FALSE)
 ```
-If we look at the data, it has several variables.
+If we look at the data, we can see the factors:
 ```
 Order       PID MS.SubClass MS.Zoning Lot.Frontage Lot.Area Street Alley Lot.Shape
 1     1 526301100          20        RL          141    31770   Pave  <NA>       IR1
@@ -48,7 +50,6 @@ Order       PID MS.SubClass MS.Zoning Lot.Frontage Lot.Area Street Alley Lot.Sha
 5     5 527105010          60        RL           74    13830   Pave  <NA>       IR1
 6     6 527105030          60        RL           78     9978   Pave  <NA>       IR1
 ```
-79 variables in fact, ranging from how many chimneys to the pool size to the condition of the sales.
 
 ## 1.3 Exploring relationships
 
@@ -78,6 +79,7 @@ Next, we can create a test and training data set:
   test <- sales[-split, ]
 ```
 For the model, I'll select several other variables to make the regression model:
+
 - Lot area
 - Living area
 - Garage area
@@ -85,8 +87,8 @@ For the model, I'll select several other variables to make the regression model:
 - Year built
 - Wood deck square feet
 
+I'll do this with `dplyr`'s `select()`:
 ```
-  # Make the initial model.
   train <- train %>% select(SalePrice,
                             Lot.Area,
                             Gr.Liv.Area,
@@ -101,7 +103,8 @@ At this point, we should do several things: namely, check for missing variables 
 ```
 ![pairpanel](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/pairpanel.jpeg)
 
-We see the correlations with each variable. Interestingly, some of these are not as high as one would expect. Finally, we can fit a linear model with `lm()`:
+We see the correlations with each variable. Interestingly, some of these are not as high as one would expect (lot area), others are higher (wood decks?). Finally, we can fit a linear model with `lm()`:
+
 ```
   fit <-  lm(SalePrice ~ Lot.Area +
                Gr.Liv.Area +
