@@ -97,7 +97,7 @@ I'll do this with `dplyr`'s `select()`, to select them along with the sale price
                             Year.Built,
                             Wood.Deck.SF)
 ```
-At this point, we should do several things: namely, check for missing variables, and decide what to do with these missing elements in the data. I'm happy with how things look, for now, since not all the cases can be eliminated from the beginning. Next, we should seriously consider the distribution of the dataset: a linear regression assumes that the residuals have a normal distribution, and so the data might need to be transformed to a log scale: in this case, I'm okay with the skew, though I will return to this later.
+At this point, we should do several things: namely, check for missing variables, and decide what to do with these missing elements in the data. After investigating them, I'm happy with imputing these variables to a 0 value, and not assuming that they are missing variables--except in one case, that of the wood deck square footage, which ideally should be a binary variable. For now I will impute that also to 0. Next, we should seriously consider the distribution of the dataset: a linear regression assumes that the residuals have a normal distribution, and so the data might need to be transformed to a log scale: in this case, I'm okay with the skew, though I will return to this later.
 
 After that, we should look at the initial correlations from the variables we selected. We can do a pair panel with the `psych` package:
 ```
@@ -145,7 +145,7 @@ There are three, but the adjusted R-squared tells us overall the model seems to 
 Still, it's not the best, and at this point, knowing both how our model is working and how well it is not working, we could modify our model, in particular in four major ways:
 
 - Adding a non-linear term
-- Creating a binary indicator, rather than a continious variable, for something which might matter over a certain threshold (such as our wood deck size)
+- Creating a binary indicator, rather than a continuous variable, for something which might matter over a certain threshold (such as our wood deck size)--and eliminating NA-values on that basis
 - Specifying interaction effects between two highly correlated variables (the total living area and the total basement square feet, for instance)
 - Or eliminating variables which have p-values over 0.05 or even smaller.
 
