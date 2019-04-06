@@ -32,8 +32,6 @@ Each of these files is available in the "data" folder above. Our workflow will i
 - Creating a summary (specifically, a count) of the number of collisions in each neighborhood
 - Visualizing the result
 
-The result will produce a simple chloropleth map differentiating the count of the collisions across neighborhoods in Seattle.
-
 ## 1.2 Importing and Wrangling Data
 
 The data I will be using is available from the [City of Seattle](https://data.seattle.gov/), which has made great strides in [Open Data practices](http://www.seattle.gov/tech/initiatives/open-data). To begin, I will use:
