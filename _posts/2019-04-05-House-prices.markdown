@@ -78,7 +78,7 @@ Next, we can create a test and training data set. We set seed to sample from so 
   train <- sales[split, ]
   test <- sales[-split, ]
 ```
-For the model, I'll select several variables to make the regression model:
+For the model, I'll select several variables to make the regression model. There are 51 categorical variables and 28 continuous variables. I'll try and select some continuous variables which seem important to begin with. A better model would try and integrate as many variables as available. For now, let's select:
 
 - Lot area
 - Living area
@@ -97,7 +97,7 @@ I'll do this with `dplyr`'s `select()`, to select them along with the sale price
                             Year.Built,
                             Wood.Deck.SF)
 ```
-At this point, we should do several things: namely, check for missing variables in each of the areas, and decide what to do with these elements in the data. I'm happy with how things look, for now, since not all the cases can be eliminated from the beginning.
+At this point, we should do several things: namely, check for missing variables, and decide what to do with these missing elements in the data. I'm happy with how things look, for now, since not all the cases can be eliminated from the beginning. Next, we should seriously consider the distribution of the dataset: a linear regression assumes that the residuals have a normal distribution, and so the data might need to be transformed to a log scale: in this case, I'm okay with the skew, though I will return to this later.
 
 After that, we should look at the initial correlations from the variables we selected. We can do a pair panel with the `psych` package:
 ```
@@ -149,7 +149,7 @@ Still, it's not the best, and at this point, knowing both how our model is worki
 - Specifying interaction effects between two highly correlated variables (the total living area and the total basement square feet, for instance)
 - Or eliminating variables which have p-values over 0.05 or even smaller.
 
-When we have completed this, we then select the variables we want from our test set and make the prediction of the model on that:
+Also we may want to transform the data to log scale, and/or integrate more of the categorical variables, which we need to understand better. When we have completed this, we then select the variables we want from our test set and make the prediction of the model on that:
 ```
   test <- test %>% select(SalePrice,
                             Lot.Area,
