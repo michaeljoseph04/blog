@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Modeling sales Prices"
+title:  "Modeling housing sale prices"
 date:   2019-04-05 17:00:00 -0700
 categories: Project
 ---
