@@ -71,14 +71,14 @@ ggplot(data=sales, aes(x=SalePrice, y=Lot.Area)) +
 
 ## Fitting the Model
 
-Next, we can create a test and training data set:
+Next, we can create a test and training data set. We set seed to sample from so that the sample is reproducible, then use R's `sample()` to produce a random number of row values to sample from. To do this, we specify the whole sequence of rows to sample from with `seq_len()`, and pass it the number of rows of the sales dataset (`nrow(sales)`). Then we have two choices: either split the size in half, or, to have a bigger sample, make the size 3/4 of the number of total rows, rounded down (with `floor()`). I'll do the latter. I then use the split to sample from the rows specified, and then the rest of the rows:
 ```
   set.seed(2019)
   split <- sample(seq_len(nrow(sales)), size = floor(0.75 * nrow(sales)))
   train <- sales[split, ]
   test <- sales[-split, ]
 ```
-For the model, I'll select several other variables to make the regression model:
+For the model, I'll select several variables to make the regression model:
 
 - Lot area
 - Living area
@@ -87,7 +87,7 @@ For the model, I'll select several other variables to make the regression model:
 - Year built
 - Wood deck square feet
 
-I'll do this with `dplyr`'s `select()`:
+I'll do this with `dplyr`'s `select()`, to select them along with the sale price:
 ```
   train <- train %>% select(SalePrice,
                             Lot.Area,
@@ -97,7 +97,9 @@ I'll do this with `dplyr`'s `select()`:
                             Year.Built,
                             Wood.Deck.SF)
 ```
-At this point, we should do several things: namely, check for missing variables in each of the areas, and decide what to do with these elements in the data. Next, we should look at the initial correlations. We can do a pair panel with the `psych` package:
+At this point, we should do several things: namely, check for missing variables in each of the areas, and decide what to do with these elements in the data. I'm happy with how things look, for now, since not all the cases can be eliminated from the beginning.
+
+After that, we should look at the initial correlations from the variables we selected. We can do a pair panel with the `psych` package:
 ```
   pairs.panels(train, col = "green")
 ```
@@ -136,15 +138,16 @@ We may also want to consider the outliers which are visible in the Q-Q plot:
 ```
   plot(fit)
 ```
-There are three, but overall the model seems to work for 72% of cases.
+There are three, but the adjusted R-squared tells us overall the model seems to work for 72% of cases. That's not bad for a first try.
 
 # Evaluating the model
 
-At this point, knowing both how our model is working and how well it is not working, we could modify our model, in particular in four ways:
+Still, it's not the best, and at this point, knowing both how our model is working and how well it is not working, we could modify our model, in particular in four major ways:
+
 - Adding a non-linear term
 - Creating a binary indicator, rather than a continious variable, for something which might matter over a certain threshold (such as our wood deck size)
 - Specifying interaction effects between two highly correlated variables (the total living area and the total basement square feet, for instance)
-- Or eliminating variables which have p-values over 0.05
+- Or eliminating variables which have p-values over 0.05 or even smaller.
 
 When we have completed this, we then select the variables we want from our test set and make the prediction of the model on that:
 ```
