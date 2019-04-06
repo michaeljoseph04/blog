@@ -25,7 +25,7 @@ Be sure to go to the project [repository](https://github.com/michaeljoseph04/hou
 
 ## 1.2 Importing and Wrangling Data
 
-The data I will be using is the famous Ames, Ohio housing dataset. This data is made of 79 variables about housing sales in Ames, Ohio. The variables range from square feet, to number of rooms, all the way to how big the bathrooms and garages are--even how many chimneys are available. It is similar to other data sets used by large companies like Zillow. It is available from [Kaggle](https://www.kaggle.com/)
+The data I will be using is the famous Ames, Ohio housing dataset. This data is made of 79 variables about housing sales in Ames, Ohio taken from the county assessor's office (more can be found out from [this paper on the origins of the dataset](http://jse.amstat.org/v19n3/decock.pdf)). The variables range from square feet, to number of rooms, all the way to how big the bathrooms and garages are--even how many chimneys are available. It is similar to other data sets used by large companies like Zillow. It is available from [Kaggle](https://www.kaggle.com/)
 
 First, let's import the libraries we will need:
 ```
