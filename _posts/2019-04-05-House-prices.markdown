@@ -175,17 +175,18 @@ We can then compare the prediction data set with our test dataset:
 ![modeltest](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/modeltest.jpeg)
 
 Finally, what we ideally want is the r-squared value to evaluate the goodness of the model's fit. So we can calculate this by comparing the prediction and the test dataset:
-
+```
   e <- sum((test$SalePrice - prediction) ^ 2)
   t <- sum((test$SalePrice - mean(test$SalePrice)) ^ 2)
   1 - e/t
-
+```
 This gives us:
   ```
   [1] 0.7720008
   ```
+Further refinements to the model may effectively make our r-squared value closer to 1, which is what we would want most.
 A quick plot of the prediction and the test against each other shows how far the two differ:
 
 ![test1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/test1.jpeg)
 
-Further refinements to the model may effectively make this value closer to 1, which is what we would want most. In further posts I will indicate more how to do that, but I hope I've given you the tools to begin creating and evaluating models for the purposes of data exploration and for eventual analysis.
+In further posts I will indicate more how to do that, but I hope I've given you the tools to begin creating and evaluating models for the purposes of data exploration and for eventual analysis.
