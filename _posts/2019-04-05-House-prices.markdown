@@ -69,21 +69,23 @@ ggplot(data=sales, aes(x=Lot.Area, y=SalePrice)) +
 ```
 ![lot-area](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/lot-area.jpeg)
 
-Let's look at this more closely. It is hard to tell whether there is any relationship at all between the variables, in fact. If we would remove the regression line, could I tell whether having a larger lot actually influences the sale price? I'm not so sure. Let's compare this to another variable, *Gr.Liv.Area*, that of the living area in square feet inside the house:
-
-![living-area](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/living-area.jpeg)
-
-Here there appears to be a clear relationship. There are three outliers, it appears: all houses with extremely large living areas which sold for low prices, and two variables which have high living areas which sold for high prices. Aggregating the data might prove tighter relationships, but it is hard to deny that living area appears to matter to sale price. Let's compare this to the *Garage.Area*:
+Let's look at this more closely. It is hard to tell whether there is any relationship at all between the variables, in fact. If we would remove the regression line, could I tell whether having a larger lot actually influences the sale price? I'm not so sure. However, let's compare this to the *Garage.Area*:
 
 ![garage-area](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/garage-area.jpeg)
 
-Here there appears to be a relationship, except we have a number of housing sales with no garage area. This may indicate that we have to weight the variable appropriately. Finally, let's consider the sales price for year each house was built:
+Here there appears to be a relationship, except we have a number of housing sales with no garage area. This may indicate that we have to weight the variable appropriately. Let's compare both of these to another variable, *Gr.Liv.Area*, that of the living area in square feet inside the house:
+
+![living-area](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/living-area.jpeg)
+
+There is a clear relationship between the variables. There are three outliers, it appears: all houses with extremely large living areas which sold for low prices, and two variables which have high living areas which sold for high prices. Aggregating the data might prove tighter relationships, but it is hard to deny that living area appears to matter to sale price. One way to deny this, however, would be to consider the possibility that the sheer amount of houses built recently (which tend to have a larger living area than houses in the past) might also be accounting in some way for the high sale price:
 
 ![year-built](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/year-built.jpeg)
 
-Yet another type of a relationship. Though the years progress as a continuous variable, sales cluster around each year almost as if it were discrete. This is something to pay attention to as we progress: ideally, it would be good to have an exact date at which the house was built. Nevertheless, there is also a pattern here which may show a relatonship. Houses which are recently built seem to sell well. And then houses built between 1940-1980 seem to account for a large amount of the total sales. Other things to notice: there are less sales of houses between 1980-1990, and a perhaps-not-insignificant amount of houses sold which are older than 1940, and yet, even given this, the relationship between year built and sale price appears to be positive (the more recent the year, the more a house sells for).
+Indeed, houses which are recently built seem to sell well. We can get more specific to understand our dataset better, and indeed questions begin to multiply: houses built between 1940-1980 seem to account for a large amount of the total sales. Also, there are less sales of houses between 1980-1990, and a perhaps-not-insignificant amount of houses sold which are older than 1940, and yet, even given this, the relationship between year built and sale price appears to be positive: the more recent the year, the more a house sells for. (One thing to note: though the years progress as a continuous variable, sales cluster around each year almost as if it were discrete. This is something to pay attention to as we progress: ideally, it would be good to have an exact date at which the house was built, but we are operating without this.)
 
-This should indicate the diversity of relationships with sale price possible with each variable in the dataset. Additionally, this initial exploration of the relationships simply considered the continuous variables, and I saw how different each of the possible relationships actually could be. However, there are, in fact, 51 categorical variables and 28 continuous variables in the dataset, and so it may be important for us to figure out a way to weight the categorical variables and factor them into our analysis. We will return to this question.
+This should indicate the diversity of relationships with sale price possible with each variable in the dataset, and indicate how some variables might be interacting with each other. In the end, it is important to remember that I am not trying to understand which factor *caused* housing sales prices to increase, but to understand which are *most influential to that sales price.* 
+
+One more important thing to note: this initial exploration of the relationships simply considered the continuous variables, and I saw how different each of the possible relationships actually could be. However, there are, in fact, 51 categorical variables and 28 continuous variables in the dataset, and so it may be important for us to figure out a way to weight the categorical variables and factor them into our analysis. We will return to this question.
 
 ## Fitting the Model
 
