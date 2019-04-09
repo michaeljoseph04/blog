@@ -7,7 +7,7 @@ categories: Project
 
 *An introduction to building and refining multiple linear regression models*
 
-![histF](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/histF.jpeg)
+![test1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/test1.jpeg)
 
 ## 1.1 Overview
 
