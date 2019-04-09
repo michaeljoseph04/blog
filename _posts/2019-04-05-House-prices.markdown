@@ -184,5 +184,8 @@ This gives us:
   ```
   [1] 0.7720008
   ```
+A quick plot of the prediction and the test against each other shows how far we are from the actual dataset:
+
+![test1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/test1.jpeg)
 
 Further refinements to the model may effectively make this value closer to 1, which is what we would want most. In further posts I will indicate more how to do that, but I hope I've given you the tools to begin creating and evaluating models for the purposes of data exploration and for eventual analysis.
