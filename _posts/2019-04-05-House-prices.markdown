@@ -13,15 +13,16 @@ categories: Project
 
 Beginning to take data science methods and apply them to various urban policy questions can be useful, if only for exploratory analysis. While policy questions require more domain specific (that is, economic) modeling, often we want some effective models to begin to inform how our domain knowledge will fit with the work of generalizing from datasets--that is, the most useful reductions of the total number of possible models to the more domain-specific.
 
-For this still-exploratory work, multiple linear regression is a useful tool, as is the data science method of splitting data into training and test datasets. For instance, what factors go into house sale prices? In this quick introduction, which draws from the general outlook of Brett Lantz's *Machine Learning with R*, and several great walkthroughs emerging from a Kaggle competition using the dataset, I am going to show how to do some basic multiple linear regression modeling to predict housing selling prices in R.
+For this still-exploratory work, multiple linear regression is a useful tool, as is the data science method of splitting data into training and test datasets. For instance, what factors go into house sale prices? This introduction draws from the general perspective of Brian Everitt and Torsten Hothorn's *Introduction to Applied Multivariate Analysis in R*, the workflow of Brett Lantz's *Machine Learning with R* and [Susan Li](https://susanli2016.github.io/Predict-House-Price/), and several great walkthroughs emerging from a 2017 competition using the dataset. I am going to show how best to set up and execute some basic multiple linear regression modeling to predict housing selling prices in R.
 
 This will include:
 - Importing the dataset
 - Looking for relationships between variables
 - Fitting a model
 - Evaluating a model
+- Refining a model
 
-Be sure to go to the project [repository](https://github.com/michaeljoseph04/housing-prices) to find the code. The analysis will work with one linear model, and then suggest ways that it can be integrated into further analysis
+Be sure to go to the project [repository](https://github.com/michaeljoseph04/housing-prices) to find the code. Readers are encouraged to consider
 
 ## 1.2 Importing and Wrangling Data
 
@@ -31,10 +32,9 @@ First, let's import the libraries we will need:
 ```
   library(psych)
   library(car)
-  library(Hmisc)
   library(tidyverse)
 ```
-`psych` has useful tools for looking for relationships between variables, particularly the pair panel plot. The [Companion to Applied Regression](https://cran.r-project.org/web/packages/car/index.html) package, `car`, has all the tools I need for advanced regression. I like to load [Harrel Miscellaneous package](https://cran.r-project.org/web/packages/Hmisc/index.html) as well, which has many handy tools for data science.
+`psych` has useful tools for looking for relationships between variables, particularly the pair panel plot. The [Companion to Applied Regression](https://cran.r-project.org/web/packages/car/index.html) package, `car`, has all the tools I need for advanced regression.
 
 Next, I'll import the data, which I've saved to disk:
 ```
@@ -67,7 +67,7 @@ A quick call to `str()` shows us the structure of the dataset:
  $ Street         : chr  "Pave" "Pave" "Pave" "Pave" ...
  ...
 ```
-There are 82 variables in the data set: 79 of them are variables which describe the house itself (the others serve to identify it). What we are interested in, our dependent variable, is the sale price, *SalePrice*. We can plot its distribution:
+There are 82 variables in the data set: 80 of them are variables which describe the sold house itself (the others serve to identify it). What we are interested in, our *response variable*, is the sale price, *SalePrice*. We can plot its distribution:
 ```
 ggplot(data=sales, aes(x=SalePrice)) +
   geom_histogram(fill="lightblue", color="darkblue")+
@@ -75,9 +75,9 @@ ggplot(data=sales, aes(x=SalePrice)) +
 ```
 ![hist1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/hist1.jpeg)
 
-The default bins for the histogram are of course 30 cases. We can see that the data has a bit of a skew. This might requrie a log transformation for our regression, but we will come back to that in a moment.
+The default bins for the histogram are of course 30 cases. We can see that the data has a bit of a skew. This might require a log transformation for our regression, but we will come back to that when we come to evaluate our model.
 
-We can also see that there are a range of relationships between the sale price and other variables. For instance, we can plot the relation of sale price to lot size by plotting with `geom_point()`. We can also see what a simple linear regression (unlike a multiple linear regression) would look like by adding a `geom_smooth()` layer, and passing the method `lm`, or *linear model*, to it (I specify `se=FALSE` to decline showing the standard error of the regression):
+We can also see that there are a range of relationships between the sale price and other variables--which will be, for our purposes, the *explanatory* variables. For instance, we can plot the covariation of sale price to lot size by plotting with `geom_point()`. We can also see what a simple linear model (unlike a multiple linear model) would look like by adding a `geom_smooth()` layer, and specifying the method `lm`, or *linear model*, to it (I specify `se=FALSE` to decline showing the standard error):
 ```
 ggplot(data=sales, aes(x=Lot.Area, y=SalePrice)) +
   geom_point()+
