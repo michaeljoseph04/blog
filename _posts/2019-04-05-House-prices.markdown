@@ -106,7 +106,7 @@ ggplot(data=sales, aes(x=Mo.Sold))+
   labs(title=paste("Sales per Month", min(sales$Yr.Sold), "to", max(sales$Yr.Sold)))+
   theme_classic()
 ```
-![sales-per-month](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/sales-per-month.jpeg)
+![sales-by-month](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/sales-by-month.jpeg)
 
 This seems to have little overall effect on the sale price itself, when we plot it:
 ```
