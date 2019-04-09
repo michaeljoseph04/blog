@@ -106,7 +106,7 @@ ggplot(data=sales, aes(x=Mo.Sold))+
   labs(title=paste("Sales per Month", min(sales$Yr.Sold), "to", max(sales$Yr.Sold)))+
   theme_classic()
 ```
-![year-built](/images/sales-per-month.jpeg)
+![sales-per-month](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/sales-per-month.jpeg)
 
 This seems to have little overall effect on the sale price itself, when we plot it:
 ```
@@ -116,7 +116,7 @@ ggplot(data=sales, aes(x=Mo.Sold, y=SalePrice))+
   labs(title=paste("Sale Prices per Month", min(sales$Yr.Sold), "to", max(sales$Yr.Sold)))+
   theme_classic()
 ```
-![year-built](/images/sale-prices-month.jpeg)
+![sale-prices-month](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/sale-prices-month.jpeg)
 
 But it is worth noting that a different kind of analysis may take this into account as well.
 
