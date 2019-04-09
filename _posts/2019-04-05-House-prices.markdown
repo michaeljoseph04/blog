@@ -184,7 +184,7 @@ This gives us:
   ```
   [1] 0.7720008
   ```
-A quick plot of the prediction and the test against each other shows how far we are from the actual dataset:
+A quick plot of the prediction and the test against each other shows how far the two differ:
 
 ![test1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/test1.jpeg)
 
