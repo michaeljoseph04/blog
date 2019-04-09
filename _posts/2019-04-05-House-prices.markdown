@@ -25,7 +25,7 @@ Be sure to go to the project [repository](https://github.com/michaeljoseph04/hou
 
 ## 1.2 Importing and Wrangling Data
 
-The data I will be using is the famous Ames, Ohio housing dataset. This data is made of 79 variables about housing sales in Ames, Ohio taken from the county assessor's office (more can be found out from [this paper on the origins of the dataset](http://jse.amstat.org/v19n3/decock.pdf)). The variables range from square feet, to number of rooms, all the way to how big the bathrooms and garages are--even how many chimneys are available. It is similar to other data sets used by large companies like Zillow. It is available from [Kaggle](https://www.kaggle.com/).
+The data I will be using is the famous Ames, Ohio housing dataset. This data is made of 80 variables about housing sales in Ames, Ohio from 2006-2010, taken from the county assessor's office (more can be found out from [this paper on the origins of the dataset](http://jse.amstat.org/v19n3/decock.pdf)). The variables range from living area, to number of rooms, all the way to how big the bathrooms and garages are, to the quality and condition of the house. It even includes how many chimneys are available. It is similar to other data sets used by large companies like Zillow. It is available from [Kaggle](https://www.kaggle.com/).
 
 First, let's import the libraries we will need:
 ```
@@ -98,9 +98,23 @@ There is a clear relationship between the variables. There are three outliers, i
 
 ![year-built](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/year-built.jpeg)
 
-Indeed, houses which are recently built seem to sell well. We can get more specific to understand our dataset better, and indeed questions begin to multiply: houses built between 1940-1980 seem to account for a large amount of the total sales. Also, there are less sales of houses between 1980-1990, and a perhaps-not-insignificant amount of houses sold which are older than 1940, and yet, even given this, the relationship between year built and sale price appears to be positive: the more recent the year, the more a house sells for. (One thing to note: though the years progress as a continuous variable, sales cluster around each year almost as if it were discrete. This is something to pay attention to as we progress: ideally, it would be good to have an exact date at which the house was built, but we are operating without this.)
+Indeed, houses which are recently built seem to sell well. We can get more specific to understand our dataset better, and indeed questions begin to multiply: houses built between 1940-1980 seem to account for a large amount of the total sales. Also, there are less sales of houses between 1980-1990, and a perhaps-not-insignificant amount of houses sold which are older than 1940, and yet, even given this, the relationship between year built and sale price appears to be positive: the more recent the year, the more a house sells for. One thing to note: though the years progress as a continuous variable, sales cluster around each year almost as if it were discrete. This is something to pay attention to as we progress: ideally, it would be good to have an exact date at which the house was built, but we are operating without this. For similar reasons which applies to the dependent variable, it may be useful to understand that we are not necessarily dealing with sales themselves which are the same across time:
+```
+ggplot(data=sales, aes(x=Mo.Sold))+
+  geom_bar(color="darkblue", fill="lightblue")+
+  scale_x_continuous(breaks=seq(1:12))+
+  labs(title=paste("Sales per Month", min(sales$Yr.Sold), "to", max(sales$Yr.Sold)))+
+  theme_classic()
+```
+![year-built](/images/sales-per-month.jpeg)
 
-This should indicate the diversity of relationships with sale price possible with each variable in the dataset, and indicate how some variables might be interacting with each other. In the end, it is important to remember that I am not trying to understand which factor *caused* housing sales prices to increase, but to understand which are *most influential to that sales price.*
+This seems to have little overall effect on the sale price itself, when we plot it:
+
+![year-built](/images/sale-prices-month.jpeg)
+
+But it is worth noting that a different kind of analysis may take this into account as well.
+
+Overall, this should indicate the range of relationships with sale price possible with several variables in the dataset, and indicate how some variables might be interacting with each other. In the end, it is important to remember that I am not trying to understand which factor *caused* housing sales prices to increase, but to understand which are *most influential to the sales price.*
 
 One more important thing to note: this initial exploration of the relationships simply considered the continuous variables, and I saw how different each of the possible relationships actually could be. However, there are, in fact, 51 categorical variables and 28 continuous variables in the dataset, and so it may be important for us to figure out a way to weight the categorical variables and factor them into our analysis. We will return to this question.
 
@@ -132,7 +146,7 @@ I'll do this with `dplyr`'s `select()`, to select them along with the sale price
                             Year.Built,
                             Wood.Deck.SF)
 ```
-At this point, we should do several things: namely, check for missing variables, and decide what to do with these missing elements in the data. After investigating them, I'm happy with imputing these variables to a 0 value, and not assuming that they are missing variables--except in one case, that of the wood deck square footage, which ideally should be a binary variable. For now I will impute that also to 0. Next, we should seriously consider the distribution of the dataset: a linear regression assumes that the residuals have a normal distribution, and so the data might need to be transformed to a log scale: in this case, I'm okay with the skew, though I will return to this later.
+At this point, we should do several things: namely, check for missing variables, and decide what to do with these missing elements in the data. After investigating them, I'm happy with imputing these variables to a 0 value, and not assuming that they are missing variables--except in one case, that of the wood deck square footage, which ideally should be a binary variable. For now I will impute that also to 0. Next, we should seriously consider the distribution of the dataset: a linear regression assumes that the residuals have a normal distribution, and so the data might need to be transformed to a log scale: for now, I'm okay with the skew, though I will return to this later when I evaluate the model.
 
 After that, we should look at the initial correlations from the variables we selected. We can do a pair panel with the `psych` package:
 ```
