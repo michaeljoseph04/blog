@@ -40,7 +40,7 @@ Next, I'll import the data, which I've saved to disk:
 ```
   sales <- read.csv("AmesHousing.csv", stringsAsFactors = FALSE)
 ```
-If we look at the data, we can see the factors which went into the Ames housing data:
+Let's look at the data with `head()` to get a glimpse:
 ```
 Order       PID MS.SubClass MS.Zoning Lot.Frontage Lot.Area Street Alley Lot.Shape
 1     1 526301100          20        RL          141    31770   Pave  <NA>       IR1
@@ -49,18 +49,35 @@ Order       PID MS.SubClass MS.Zoning Lot.Frontage Lot.Area Street Alley Lot.Sha
 4     4 526353030          20        RL           93    11160   Pave  <NA>       Reg
 5     5 527105010          60        RL           74    13830   Pave  <NA>       IR1
 6     6 527105030          60        RL           78     9978   Pave  <NA>       IR1
+...
 ```
+Now we will need to explore the data some more.
 
 ## 1.3 Exploring relationships
 
-What we are interested in is the sale price, *SalePrice*. We can plot its distribution:
+A quick call to `str()` shows us the structure of the dataset:
 ```
-  ggplot(data=sales, aes(x=SalePrice)) +
-    geom_histogram()
+'data.frame':	2930 obs. of  82 variables:
+ $ Order          : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ PID            : int  526301100 526350040 526351010 526353030 527105010 527105030 527127150 527145080 527146030 527162130 ...
+ $ MS.SubClass    : int  20 20 20 20 60 60 120 120 120 60 ...
+ $ MS.Zoning      : chr  "RL" "RH" "RL" "RL" ...
+ $ Lot.Frontage   : int  141 80 81 93 74 78 41 43 39 60 ...
+ $ Lot.Area       : int  31770 11622 14267 11160 13830 9978 4920 5005 5389 7500 ...
+ $ Street         : chr  "Pave" "Pave" "Pave" "Pave" ...
+ ...
+```
+There are 82 variables in the data set: 79 of them are variables which describe the house itself (the others serve to identify it). What we are interested in, our dependent variable, is the sale price, *SalePrice*. We can plot its distribution:
+```
+ggplot(data=sales, aes(x=SalePrice)) +
+  geom_histogram(fill="lightblue", color="darkblue")+
+  theme_classic()
 ```
 ![hist1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/hist1.jpeg)
 
-We can also see that there are relationships between the sale price and other variables. For instance, we can plot the relation of sale price to lot size by plotting with `geom_point()`. We can also see what a simple linear regression (unlike a multiple linear regression) would look like by adding a `geom_smooth()` layer, and passing the method `lm`, or *linear model*, to it (I specify `se=FALSE` to decline showing the standard error of the regression):
+The default bins for the histogram are of course 30 cases. We can see that the data has a bit of a skew. This might requrie a log transformation for our regression, but we will come back to that in a moment.
+
+We can also see that there are a range of relationships between the sale price and other variables. For instance, we can plot the relation of sale price to lot size by plotting with `geom_point()`. We can also see what a simple linear regression (unlike a multiple linear regression) would look like by adding a `geom_smooth()` layer, and passing the method `lm`, or *linear model*, to it (I specify `se=FALSE` to decline showing the standard error of the regression):
 ```
 ggplot(data=sales, aes(x=Lot.Area, y=SalePrice)) +
   geom_point()+
@@ -89,10 +106,10 @@ One more important thing to note: this initial exploration of the relationships 
 
 ## Fitting the Model
 
-Next, we can create a test and training data set. We set seed to sample from so that the sample is reproducible, then use R's `sample()` to produce a random number of row values to sample from. To do this, we specify the whole sequence of rows to sample from with `seq_len()`, and pass it the number of rows of the sales dataset (`nrow(sales)`). Then we have two choices: either split the size in half, or, to have a bigger sample, make the size 3/4 of the number of total rows, rounded down (with `floor()`). I'll do the latter. I then use the split to sample from the rows specified, and then the rest of the rows:
+Next, we can create a test and training data set. We set seed to sample from so that the sample is reproducible, then use R's `sample()` to produce a random number of row values to sample from. To do this, we specify the whole sequence of rows to sample from with `seq_len()`, and pass it the number of rows of the sales dataset (`nrow(sales)`). Then we have two choices: either split the size in half, or, to have a bigger sample, make the size 1/2 of the number of total rows, (the number will be an whole number, but in other cases we might want to round this down by wrapping it with `floor()`). I'll do the latter. I then use the split to sample from the rows specified, and then the rest of the rows:
 ```
   set.seed(2019)
-  split <- sample(seq_len(nrow(sales)), size = floor(0.75 * nrow(sales)))
+  split <- sample(seq_len(nrow(sales)), size = 0.5 * nrow(sales))
   train <- sales[split, ]
   test <- sales[-split, ]
 ```
