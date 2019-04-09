@@ -109,7 +109,13 @@ ggplot(data=sales, aes(x=Mo.Sold))+
 ![year-built](/images/sales-per-month.jpeg)
 
 This seems to have little overall effect on the sale price itself, when we plot it:
-
+```
+ggplot(data=sales, aes(x=Mo.Sold, y=SalePrice))+
+  geom_point(alpha=.1)+
+  scale_x_continuous(breaks=seq(1:12))+
+  labs(title=paste("Sale Prices per Month", min(sales$Yr.Sold), "to", max(sales$Yr.Sold)))+
+  theme_classic()
+```
 ![year-built](/images/sale-prices-month.jpeg)
 
 But it is worth noting that a different kind of analysis may take this into account as well.
