@@ -154,13 +154,15 @@ I'll do this with `dplyr`'s `select()`, to select them along with the sale price
 ```
 At this point, we should do several things: namely, check for missing variables, and decide what to do with these missing elements in the data. After investigating them, I'm happy with imputing these variables to a 0 value, and not assuming that they are missing variables--except in one case, that of the wood deck square footage, which ideally should be a binary variable. For now I will impute that also to 0. Next, we should seriously consider the distribution of the dataset: a linear regression assumes that the residuals have a normal distribution, and so the data might need to be transformed to a log scale: for now, I'm okay with the skew, though I will return to this later when I evaluate the model.
 
-After that, we should look at the initial correlations from the variables we selected. We can do a pair panel with the `psych` package:
+After that, we should look at the initial correlations from the variables we selected. Instead of plotting these against *SalePrice* one by one as we did above, we can do a pair panel with the `psych` package:
 ```
   pairs.panels(train, col = "green")
 ```
 ![pairpanel](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/pairpanel.jpeg)
 
-We see the correlations with each variable. Interestingly, some of these are not as high as one would expect (lot area), others are higher (wood decks?). Finally, we can fit a linear model with `lm()`:
+We see the correlations with each variable with *SalePrice* in the top row. It's clear that the *Lot.Area* and *Wood.Deck.SF* have lower correlations than living area, or even garage area. A consideration of the distributions and the covariance with respect to *SalePrice* on the far left column.
+
+Finally, we can fit a linear model with `lm()`:
 
 ```
   fit <-  lm(SalePrice ~ Lot.Area +
@@ -202,7 +204,7 @@ Still, it's not the best, and at this point, knowing both how our model is worki
 - Adding a non-linear term
 - Creating a binary indicator, rather than a continuous variable, for something which might matter over a certain threshold (such as our wood deck size)--and eliminating NA-values on that basis
 - Specifying interaction effects between two highly correlated variables (the total living area and the total basement square feet, for instance)
-- Or eliminating variables which have p-values over 0.05 or even smaller.
+- Or eliminating variables which have p-values over 0.05, certainly, and others which had p-values which are unsatisfactory (cf. lot area and the wood deck area)
 
 Also we may want to transform the data to log scale, and/or integrate more of the categorical variables, which we need to understand better. When we have completed this, we then select the variables we want from our test set and make the prediction of the model on that:
 ```
@@ -216,7 +218,7 @@ Also we may want to transform the data to log scale, and/or integrate more of th
 
   prediction <- predict(fit, newdata = test)
 ```
-We can then compare the prediction data set with our test dataset:
+In order to get a better sense of what we would improve, we can compare the prediction data set with our test dataset:
 ```
   a <- data.frame(test$SalePrice) %>% mutate(type = "test") %>% rename(price = test.SalePrice)
   b <- data.frame(prediction) %>% mutate(type = "model") %>%
@@ -229,7 +231,7 @@ We can then compare the prediction data set with our test dataset:
 ```
 ![modeltest](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/modeltest.jpeg)
 
-Finally, what we ideally want is the r-squared value to evaluate the goodness of the model's fit. So we can calculate this by comparing the prediction and the test dataset:
+Finally, what we ideally want is the R-squared value to evaluate the goodness of the model's fit. So we can calculate this by comparing the prediction and the test dataset:
 ```
   e <- sum((test$SalePrice - prediction) ^ 2)
   t <- sum((test$SalePrice - mean(test$SalePrice)) ^ 2)
