@@ -40,7 +40,7 @@ Next, I'll import the data, which I've saved to disk:
 ```
   sales <- read.csv("AmesHousing.csv", stringsAsFactors = FALSE)
 ```
-If we look at the data, we can see the factors:
+If we look at the data, we can see the factors which went into the Ames housing data:
 ```
 Order       PID MS.SubClass MS.Zoning Lot.Frontage Lot.Area Street Alley Lot.Shape
 1     1 526301100          20        RL          141    31770   Pave  <NA>       IR1
@@ -60,14 +60,30 @@ What we are interested in is the sale price, *SalePrice*. We can plot its distri
 ```
 ![hist1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/hist1.jpeg)
 
-We can also see that there are relationships between the sale price and other variables. For instance, we can plot the relation of sale price to lot size:
+We can also see that there are relationships between the sale price and other variables. For instance, we can plot the relation of sale price to lot size by plotting with `geom_point()`. We can also see what a simple linear regression (unlike a multiple linear regression) would look like by adding a `geom_smooth()` layer, and passing the method `lm`, or *linear model*, to it (I specify `se=FALSE` to decline showing the standard error of the regression):
 ```
-ggplot(data=sales, aes(x=SalePrice, y=Lot.Area)) +
+ggplot(data=sales, aes(x=Lot.Area, y=SalePrice)) +
   geom_point()+
   geom_smooth(method="lm", se=FALSE)+
   labs(title="Sale Price vs. Lot Area")
 ```
-![sale-price-lot](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/sale-price-lot.jpeg)
+![lot-area](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/lot-area.jpeg)
+
+Let's look at this more closely. It is hard to tell whether there is any relationship at all between the variables, in fact. If we would remove the regression line, could I tell whether having a larger lot actually influences the sale price? I'm not so sure. Let's compare this to another variable, *Gr.Liv.Area*, that of the living area in square feet inside the house:
+
+![living-area](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/living-area.jpeg)
+
+Here there appears to be a clear relationship. There are three outliers, it appears: all houses with extremely large living areas which sold for low prices, and two variables which have high living areas which sold for high prices. Aggregating the data might prove tighter relationships, but it is hard to deny that living area appears to matter to sale price. Let's compare this to the *Garage.Area*:
+
+![garage-area](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/garage-area.jpeg)
+
+Here there appears to be a relationship, except we have a number of housing sales with no garage area. This may indicate that we have to weight the variable appropriately. Finally, let's consider the sales price for year each house was built:
+
+![year-built](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/year-built.jpeg)
+
+Yet another type of a relationship. Though the years progress as a continuous variable, sales cluster around each year almost as if it were discrete. This is something to pay attention to as we progress: ideally, it would be good to have an exact date at which the house was built. Nevertheless, there is also a pattern here which may show a relatonship. Houses which are recently built seem to sell well. And then houses built between 1940-1980 seem to account for a large amount of the total sales. Other things to notice: there are less sales of houses between 1980-1990, and a perhaps-not-insignificant amount of houses sold which are older than 1940, and yet, even given this, the relationship between year built and sale price appears to be positive (the more recent the year, the more a house sells for).
+
+This should indicate the diversity of relationships with sale price possible with each variable in the dataset. Additionally, this initial exploration of the relationships simply considered the continuous variables, and I saw how different each of the possible relationships actually could be. However, there are, in fact, 51 categorical variables and 28 continuous variables in the dataset, and so it may be important for us to figure out a way to weight the categorical variables and factor them into our analysis. We will return to this question.
 
 ## Fitting the Model
 
@@ -78,7 +94,7 @@ Next, we can create a test and training data set. We set seed to sample from so 
   train <- sales[split, ]
   test <- sales[-split, ]
 ```
-For the model, I'll select several variables to make the regression model. There are 51 categorical variables and 28 continuous variables. I'll try and select some continuous variables which seem important to begin with. A better model would try and integrate as many variables as available. For now, let's select:
+For the model, I'll select several variables to make the regression model. I'll try and select some continuous variables which seem important to begin with. A better model would try and integrate as many variables as available. For now, let's select:
 
 - Lot area
 - Living area
