@@ -138,6 +138,14 @@ cor(s)
 ```
 It's clear the highest correlation with *SalePrice* belongs to the living areas of the cases.
 
+A handy way to do all of the above data exploration is to visualize it with a pair panel in the `psych` package:
+```
+  pairs.panels(s, col = "green")
+```
+![pairpanel](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/pairpanel.jpeg)
+
+This shows us the correlations of each variable with each other and the distributions of each variable, together with a plot of the data with a LOESS trend line.
+
 One more important thing to note: this initial exploration of the relationships simply considered the continuous variables, and I saw how different each of the possible relationships actually could be. However, there are, in fact, 52 categorical variables and 28 continuous variables in the dataset, and so it may be important for us to figure out a way to weight the categorical variables and factor them into our analysis. We will return to this question.
 
 ## Fitting the Model
@@ -207,14 +215,6 @@ I'll do this with `dplyr`'s `select()`, to select them along with the sale price
                             Wood.Deck.SF)
 ```
 At this point, we should do several things: namely, check for missing variables, and decide what to do with these missing elements in the data. After investigating them, I'm happy with imputing these variables to a 0 value, and not assuming that they are missing variables--except in one case, that of the wood deck square footage, which ideally should be a binary variable. For now I will impute that also to 0. Next, we should seriously consider the distribution of the dataset: a linear regression assumes that the residuals have a normal distribution, and so the data might need to be transformed to a log scale: for now, I'm okay with the skew, though I will return to this later when I evaluate the model.
-
-After that, we should look at the initial correlations from the variables we selected. Instead of plotting these against *SalePrice* one by one as we did above, we can do a pair panel with the `psych` package:
-```
-  pairs.panels(train, col = "green")
-```
-![pairpanel](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/pairpanel.jpeg)
-
-We see the correlations with each variable with *SalePrice* in the top row. It's clear that the *Lot.Area* and *Wood.Deck.SF* have lower correlations than living area, or even garage area. A consideration of the distributions and the covariance with respect to *SalePrice* on the far left column.
 
 Finally, we can fit a linear model with `lm()`:
 
