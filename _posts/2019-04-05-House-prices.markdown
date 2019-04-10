@@ -13,7 +13,7 @@ categories: Project
 
 Beginning to take data science methods and apply them to various urban policy questions can be useful, if only for exploratory analysis. While policy questions require more domain specific (that is, economic) modeling, often we want some effective models to begin to inform how our domain knowledge will fit with the work of generalizing from datasets--that is, the most useful reductions of the total number of possible models to the more domain-specific.
 
-For this still-exploratory work, multiple linear regression is a useful tool, as is the data science method of splitting data into training and test datasets. For instance, what factors go into house sale prices? This introduction draws from the general perspective of Brian Everitt and Torsten Hothorn's *Introduction to Applied Multivariate Analysis in R*, the workflow of Brett Lantz's *Machine Learning with R* and [Susan Li](https://susanli2016.github.io/Predict-House-Price/), and several great walkthroughs emerging from a 2017 competition using the dataset. I am going to show how best to set up and execute some basic multiple linear regression modeling to predict housing selling prices in R.
+For this still-exploratory work, multiple linear regression is a useful tool, as is the data science method of splitting data into training and test datasets. For instance, what factors go into house sale prices? This introduction draws from the general perspective of Brian Everitt and Torsten Hothorn's *Introduction to Applied Multivariate Analysis in R*, and the data science inspired workflow of Brett Lantz's *Machine Learning with R* and [Susan Li](https://susanli2016.github.io/Predict-House-Price/), and several great walkthroughs emerging from a 2017 competition using the dataset. I am going to show how best to set up and execute some basic multiple linear regression modeling to predict housing selling prices in R.
 
 This will include:
 - Importing the dataset
@@ -149,7 +149,45 @@ Next, we can create a test and training data set. We set seed to sample from so 
   train <- sales[split, ]
   test <- sales[-split, ]
 ```
-For the model, I'll select several variables to make the regression model. I'll try and select some continuous variables which seem important to begin with. A better model would try and integrate as many variables as available. For now, let's select:
+I'll select several variables to make the regression model. Which ones to pick? A good model would try and integrate as many variables as available, leveraging the size and good quality of the data for the analysis. To start, I will consider the totality of the variables which are already numeric, whether continuous or discrete. I can do this by applying the function `is.numeric()`, which returns *TRUE* if a variable is of a numeric variable type (either decimal or integer), with `sapply()`. `sapply()` will apply the function to all cases in the dataframe, and then wrapping it in a subsetting bracket in the column position will keep all the cases where it returns *TRUE*:
+```
+sn <- train
+sn <- sn %>% select(-Order, -PID) # Remove IDs
+sn <- sn[,sapply(sn, is.numeric)]
+```
+This gives us 36 variables, along with *SalesPrice*. Let's now find which have the highest correlation, and use those in our analysis. We could use `pairs.panels()` for this, but I will instead create a correlation matrix. This code is a bit clunky but I do it for clarity. First, we impute all *NAs* to 0, since `cor()` will not return a value at all for a variable if one of the cases has a *NA* value. We should be clear about what this means however, since it represents a large assumption: we are assuming that when a house has a *Garage.Area* of *NA*, this means it is not a missing case, but actually that there is no garage, and so we are fine with representing it as having an area of *0*. Is this reasonable? A quick count of all the *NAs* with `sapply(sn, function(x) sum(is.na(x)))` shows that there are over 217 cases which have *NA* values. Like other researchers using the dataset, I am concluding that given the data, this represents not a missing value (indeed, all the other variables are entered correctly in such cases), but a lack of a garage. This is so in all the other cases, so I impute the value of 0 to all of the variables in the dataframe. Next, I create a correlation matrix, and extract the last row, which is the correlation matrix for *SalesPrice*, our response variable. Then I wrangle the data a bit to display this in a graph:
+```
+sn <- sn %>% mutate_all(~replace(., is.na(.), 0))
+sn_corm <- cor(sn)
+sn_corm <- sn_corm[max(nrow(sn_corm)),]
+sn_corm <- as.data.frame(sn_corm)
+sn_corm <- rownames_to_column(sn_corm, var="Variable")
+sn_corm <- sn_corm %>%
+  rename(Correlation = sn_corm, Variable=Variable) %>%
+  group_by(Variable) %>%
+  arrange(desc(Correlation))
+
+ggplot(sn_corm, aes(x=reorder(Variable, -Correlation), y=Correlation))+
+           geom_bar(stat="identity")+
+           coord_flip()+
+           labs(title="Correlation with SalesPrice")+
+           xlab("Variable")+
+           theme_classic()
+```
+
+![cor-continuous](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/cor-continuous.jpeg)
+
+We can see that the highest correlations with *SalesPrice* include:
+- Overall quality (a ranking from 0-10)
+- Living area
+- How many cars can fit in the garage
+- Total basement area
+- First floor area
+- Year Built
+- Year of a remodeling
+- A full bath
+
+And other variables. From this we can select ones with high correlations. For now, let's select several with high correlations which are however also continuous, not discrete:
 
 - Lot area
 - Living area
