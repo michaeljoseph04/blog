@@ -138,7 +138,7 @@ cor(s)
 ```
 It's clear the highest correlation with *SalePrice* belongs to the living areas of the cases.
 
-One more important thing to note: this initial exploration of the relationships simply considered the continuous variables, and I saw how different each of the possible relationships actually could be. However, there are, in fact, 51 categorical variables and 28 continuous variables in the dataset, and so it may be important for us to figure out a way to weight the categorical variables and factor them into our analysis. We will return to this question.
+One more important thing to note: this initial exploration of the relationships simply considered the continuous variables, and I saw how different each of the possible relationships actually could be. However, there are, in fact, 52 categorical variables and 28 continuous variables in the dataset, and so it may be important for us to figure out a way to weight the categorical variables and factor them into our analysis. We will return to this question.
 
 ## Fitting the Model
 
