@@ -86,7 +86,7 @@ ggplot(data=sales, aes(x=Lot.Area, y=SalePrice)) +
 ```
 ![lot-area](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/lot-area.jpeg)
 
-Let's look at this more closely. It is hard to tell whether there is any relationship at all between the variables, in fact. If we would remove the regression line, could I tell whether having a larger lot actually influences the sale price? I'm not so sure. However, let's compare this to the *Garage.Area*:
+Let's look at this more closely. It is hard to tell whether there is any covariation at all between the variables, in fact. If we would remove the regression line, could I tell whether having a larger lot actually influences the sale price? I'm not so sure. Let's compare this to the *Garage.Area*:
 
 ![garage-area](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/garage-area.jpeg)
 
@@ -121,6 +121,22 @@ ggplot(data=sales, aes(x=Mo.Sold, y=SalePrice))+
 But it is worth noting that a different kind of analysis may take this into account as well.
 
 Overall, this should indicate the range of relationships with sale price possible with several variables in the dataset, and indicate how some variables might be interacting with each other. In the end, it is important to remember that I am not trying to understand which factor *caused* housing sales prices to increase, but to understand which are *most influential to the sales price.*
+
+To understand this better than simply graphically, we can construct covariation and correlation matrices which display these factors:
+We can understand a little more by looking at the actual numbers and comparing them to others. I can calculate the covariation with `cov()`, and the correlation with `cor()`: the latter is easier to interpret because it is the covariance divided by the standard deviations of the two variables, and thus is independent of the scales of the variables which compose it (I'll do this by tidily selecting from the sales data and imputing values of 0 to the *NA* cases in the *Garage.Area* variable):
+
+```
+s <- sales %>% select(SalePrice,
+                      Lot.Area,
+                      Gr.Liv.Area,
+                      Garage.Area,
+                      Year.Built) %>%
+  replace_na(list(Garage.Area=0))
+cor(s)
+#            SalePrice  Lot.Area   Gr.Liv.Area   Garage.Area   Year.Built
+#SalePrice   1.0000000 0.2665492   0.7067799     0.6401383     0.5584261
+```
+It's clear the highest correlation with *SalePrice* belongs to the living areas of the cases.
 
 One more important thing to note: this initial exploration of the relationships simply considered the continuous variables, and I saw how different each of the possible relationships actually could be. However, there are, in fact, 51 categorical variables and 28 continuous variables in the dataset, and so it may be important for us to figure out a way to weight the categorical variables and factor them into our analysis. We will return to this question.
 
