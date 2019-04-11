@@ -5,15 +5,15 @@ date:   2019-04-05 17:00:00 -0700
 categories: Project
 ---
 
-*An introduction to building and refining multiple linear regression models*
+*An introduction to building and refining univariate multiple linear regression models*
 
 ![test1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/test1.jpeg)
 
 ## 1.1 Overview
 
-Beginning to take data science methods and apply them to various urban policy questions can be useful, if only for exploratory analysis. While policy questions require more domain specific (that is, economic) modeling, often we want some effective models to begin to inform how our domain knowledge will fit with the work of generalizing from datasets--that is, the most useful reductions of the total number of possible models to the more domain-specific.
+Beginning to take data science methods and apply them to various urban policy questions can be useful, if only for exploratory analysis. While policy questions require more domain specific (that is, economic) modeling, often we want some effective models to begin to inform how our domain knowledge will fit with the work of generalizing from datasets--that is, the most useful reductions of the total number of possible models to the most effective for domain-specific analysis.
 
-For this still-exploratory work, multiple linear regression is a useful tool, as is the data science method of splitting data into training and test datasets. For instance, what factors go into house sale prices? This introduction draws from the general perspective of Brian Everitt and Torsten Hothorn's *Introduction to Applied Multivariate Analysis in R*, and the data science inspired workflow of Brett Lantz's *Machine Learning with R*, and several great walkthroughs emerging from a 2017 competition using the dataset, including [Susan Li's](https://susanli2016.github.io/Predict-House-Price/). I am going to show how best to set up and execute some basic multiple linear regression modeling to predict housing selling prices in R.
+For this still-exploratory work, multiple linear regression is a useful tool, as are data science methods of treating data for model building. For instance, what factors go into house sale prices? This introduction draws from the general perspective of Daniel Zelterman's *Applied Multivariate Statistics in R* and Brian Everitt and Torsten Hothorn's *Introduction to Applied Multivariate Analysis in R*, and the data science inspired workflow of Brett Lantz's *Machine Learning with R*, along with several great walkthroughs emerging from a 2017 competition using the dataset, including [Susan Li's](https://susanli2016.github.io/Predict-House-Price/). With that perspective, I am going to show how best to set up and execute some basic univariate multiple linear regression modeling to predict housing sale prices in R.
 
 This will include:
 - Importing the dataset
@@ -40,9 +40,16 @@ Next, I'll import the data, which I've saved to disk:
 ```
   sales <- read.csv("AmesHousing.csv", stringsAsFactors = FALSE)
 ```
+Next, we can create a test and training data set, so that we can carry out all our exploratory and modeling work in a clean and unbiased environment. We set a seed to sample with so that the sample is reproducible, then use R's `sample()` to produce a random number of row values to sample from. To do this, we specify the whole sequence of rows to sample from with `seq_len()`, and pass it the number of rows of the sales dataset (`nrow(sales)`). Then we have two choices: either split the size in half, or, to have a bigger sample, make the size 1/2 of the number of total rows, (the number will be an whole number, but in other cases we might want to round this down by wrapping it with `floor()`). I'll do the latter. I then use the split to sample from the rows specified, and then the rest of the rows:
+```
+  set.seed(2019)
+  split <- sample(seq_len(nrow(sales)), size = 0.5 * nrow(sales))
+  train <- sales[split, ]
+  test <- sales[-split, ]
+```
 Let's look at the data with `head()` to get a glimpse:
 ```
-Order       PID MS.SubClass MS.Zoning Lot.Frontage Lot.Area Street Alley Lot.Shape
+      Order       PID MS.SubClass MS.Zoning Lot.Frontage Lot.Area Street Alley Lot.Shape
 1     1 526301100          20        RL          141    31770   Pave  <NA>       IR1
 2     2 526350040          20        RH           80    11622   Pave  <NA>       Reg
 3     3 526351010          20        RL           81    14267   Pave  <NA>       IR1
@@ -51,7 +58,7 @@ Order       PID MS.SubClass MS.Zoning Lot.Frontage Lot.Area Street Alley Lot.Sha
 6     6 527105030          60        RL           78     9978   Pave  <NA>       IR1
 ...
 ```
-Now we will need to explore the data some more.
+One last thing, let's eliminate the *Order* and *PID* fields, which are identifiers we don't need. Now we will need to explore the data some more.
 
 ## 1.3 Exploring relationships
 
@@ -67,7 +74,7 @@ A quick call to `str()` shows us the structure of the dataset:
  $ Street         : chr  "Pave" "Pave" "Pave" "Pave" ...
  ...
 ```
-There are 82 variables in the data set: 80 of them are variables which describe the sold house itself (the others serve to identify it). What we are interested in, our *response variable*, is the sale price, *SalePrice*. We can plot its distribution:
+There are 82 variables in the data set: 80 of them are variables which describe the sold house itself (the others serve to identify it, and we will eliminate those shortly). What we are interested in, our *response variable*, is the sale price, *SalePrice*. We can plot its distribution:
 ```
 ggplot(data=sales, aes(x=SalePrice)) +
   geom_histogram(fill="lightblue", color="darkblue")+
@@ -150,13 +157,6 @@ One more important thing to note: this initial exploration of the relationships 
 
 ## Fitting the Model
 
-Next, we can create a test and training data set. We set seed to sample from so that the sample is reproducible, then use R's `sample()` to produce a random number of row values to sample from. To do this, we specify the whole sequence of rows to sample from with `seq_len()`, and pass it the number of rows of the sales dataset (`nrow(sales)`). Then we have two choices: either split the size in half, or, to have a bigger sample, make the size 1/2 of the number of total rows, (the number will be an whole number, but in other cases we might want to round this down by wrapping it with `floor()`). I'll do the latter. I then use the split to sample from the rows specified, and then the rest of the rows:
-```
-  set.seed(2019)
-  split <- sample(seq_len(nrow(sales)), size = 0.5 * nrow(sales))
-  train <- sales[split, ]
-  test <- sales[-split, ]
-```
 I'll select several variables to make the regression model. Which ones to pick? A good model would try and integrate as many variables as available, leveraging the size and good quality of the data for the analysis. To start, I will consider the totality of the variables which are already numeric, whether continuous or discrete. I can do this by applying the function `is.numeric()`, which returns *TRUE* if a variable is of a numeric variable type (either decimal or integer), with `sapply()`. `sapply()` will apply the function to all cases in the dataframe, and then wrapping it in a subsetting bracket in the column position will keep all the cases where it returns *TRUE*:
 ```
 sn <- train
@@ -261,43 +261,18 @@ Still, it's not the best, and at this point, knowing both how our model is worki
 - Or eliminating variables which have p-values over 0.05, certainly, and others which had p-values which are unsatisfactory (cf. lot area and the wood deck area)
 
 Also we may want to transform the data to log scale, and/or integrate more of the categorical variables, which we need to understand better. When we have completed this, we then select the variables we want from our test set and make the prediction of the model on that:
-```
-  test <- test %>% select(SalePrice,
-                            Lot.Area,
-                            Gr.Liv.Area,
-                            Garage.Area,
-                            Total.Bsmt.SF,
-                            Year.Built,
-                            Wood.Deck.SF)
 
-  prediction <- predict(fit, newdata = test)
+In order to get a better sense of what we would improve, we next have to look at the residuals, and then more at the prediction vs. the test values:
 ```
-In order to get a better sense of what we would improve, we can compare the prediction data set with our test dataset:
+ggplot(fit, aes(fitted, resid))+
+  geom_point()+
+  stat_smooth(method="loess", se=FALSE)+
+  geom_hline(yintercept=0, col="red", linetype="dashed")+
+  xlab("Fitted values")+
+  ylab("Residuals")+
+  ggtitle("Residual vs Fitted Plot")+
+  theme_classic()
 ```
-  a <- data.frame(test$SalePrice) %>% mutate(type = "test") %>% rename(price = test.SalePrice)
-  b <- data.frame(prediction) %>% mutate(type = "model") %>%
-    rename(price = prediction) %>%
-    bind_rows(a)
+![resids](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/resids.jpeg)
 
-  ggplot(data = b, aes(x=price, fill=type))+
-    geom_histogram(alpha=.9)+
-    theme_classic()
-```
-![modeltest](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/modeltest.jpeg)
-
-Finally, what we ideally want is the R-squared value to evaluate the goodness of the model's fit. So we can calculate this by comparing the prediction and the test dataset:
-```
-  e <- sum((test$SalePrice - prediction) ^ 2)
-  t <- sum((test$SalePrice - mean(test$SalePrice)) ^ 2)
-  1 - e/t
-```
-This gives us:
-  ```
-  [1] 0.7720008
-  ```
-Further refinements to the model may effectively make our R-squared value closer to 1, which is what we would want most.
-A quick plot of the prediction and the test against each other shows how far the two differ:
-
-![test1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/test1.jpeg)
-
-In further posts I will indicate more how to do that, but I hope I've given you the tools to begin creating and evaluating models for the purposes of data exploration and for eventual analysis.
+From here, further refinements to the model may effectively make our R-squared value closer to 1, which is what we would want most. We can also begin to do a more sophisticated multivariate linear regression. In further posts I will indicate more how to do that, but I hope I've given you the tools to begin creating and evaluating models for the purposes of data exploration and for eventual analysis.
