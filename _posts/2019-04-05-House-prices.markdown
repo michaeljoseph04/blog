@@ -5,15 +5,15 @@ date:   2019-04-05 17:00:00 -0700
 categories: Project
 ---
 
-*An introduction to building and refining univariate multiple linear regression models*
+*An introduction to building and refining multiple linear regression models*
 
-![test1](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/test1.jpeg)
+![cor-continuous](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/cor-continuous.jpeg)
 
 ## 1.1 Overview
 
 Beginning to take data science methods and apply them to various urban policy questions can be useful, if only for exploratory analysis. While policy questions require more domain specific (that is, economic) modeling, often we want some effective models to begin to inform how our domain knowledge will fit with the work of generalizing from datasets--that is, the most useful reductions of the total number of possible models to the most effective for domain-specific analysis.
 
-For this still-exploratory work, multiple linear regression is a useful tool, as are data science methods of treating data for model building. For instance, what factors go into house sale prices? This introduction draws from the general perspective of Daniel Zelterman's *Applied Multivariate Statistics in R* and Brian Everitt and Torsten Hothorn's *Introduction to Applied Multivariate Analysis in R*, and the data science inspired workflow of Brett Lantz's *Machine Learning with R*, along with several great walkthroughs emerging from a 2017 competition using the dataset, including [Susan Li's](https://susanli2016.github.io/Predict-House-Price/). With that perspective, I am going to show how best to set up and execute some basic univariate multiple linear regression modeling to predict housing sale prices in R.
+For this still-exploratory work, multiple linear regression is a useful tool, as are data science methods of treating data for model building. For instance, what factors go into house sale prices? This introduction draws from the general perspective of Daniel Zelterman's *Applied Multivariate Statistics in R* and Brian Everitt and Torsten Hothorn's *Introduction to Applied Multivariate Analysis in R*, and the data science inspired workflow of Brett Lantz's *Machine Learning with R*, along with several great walkthroughs emerging from a 2017 competition using the dataset, including [Susan Li's](https://susanli2016.github.io/Predict-House-Price/). With that perspective, I am going to show how best to set up and execute some basic multiple linear regression modeling to predict housing sale prices in R.
 
 This will include:
 - Importing the dataset
