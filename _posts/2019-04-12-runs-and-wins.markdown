@@ -44,14 +44,21 @@ t <- t %>%
   mutate(wpct = (W/(W+L)))
 ```
 If we look at the five number summary of run differentials with `summary()`, we see:
- Min  | 1Q    | Med   | Mean  | 3Q    | Max  
-------|-------|-------|-------|-------|------
- -337 | -78.25| 4.5   | 0     | 78.5  | 300  
+- Minimum: -337
+- First Quartile: -78.25
+- Median: 4.5
+- Mean: 0
+- Third Quartile: 78.5
+- Maximum: 300
 
-If we look at the five number summary of winning percentage with `summary()`, we see:
- Min  | 1Q    | Med   | Mean  | 3Q    | Max  
-------|-------|-------|-------|-------|------
- .265 | .444  | .505  | .500  | .556  | .716
+And if we look at the five number summary of winning percentage with `summary()`, we see:
+
+- Minimum: .265
+- First Quartile: .444
+- Median: .505
+- Mean: .500
+- Third Quartile: .556
+- Maximum: .716
 
 That should give us some expectation of just how much run differentials can translate into winning percentages in the furst place: clearly no one is winning all the games and even the lowest performing team is winning roughly a quarter of their games (.265, to be exact). However, we can plot the two against each other to test the general assumption, which to Marchi and Albert seems obvious but which I treat with a little more hesitation, that greater run differential may translate into a higher winning percentage:
 ```
@@ -92,7 +99,7 @@ This returns the summary output of `lm()` as a tidy data frame. (This is not onl
 1 (Intercept) 0.500     0.00116    433.      0.       
 2 rundiff     0.000626  0.0000110  57.1      1.31e-215
 ```
-Marchi and Albert explain the estimate variable and its two cases: a team with a run differential of zero will win half of its games (.500, the intercept), and a one run increase in the run differential will correspond to a .00626 increase in winning percentage. The model, in other words, can be expressed:
+Marchi and Albert explain the estimate variable and its two cases: a team with a run differential of zero will win half of its games (.500, the intercept), and a one run increase in a season's run differential will correspond to a .00626 increase in winning percentage. The model, in other words, can be expressed:
 
 *Winning percentage = .500 + .00626 * run differential + residuals*
 
