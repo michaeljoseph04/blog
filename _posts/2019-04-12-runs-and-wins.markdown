@@ -44,14 +44,14 @@ t <- t %>%
   mutate(wpct = (W/(W+L)))
 ```
 If we look at the five number summary of run differentials with `summary()`, we see:
-| Min  | 1Q    | Med   | Mean  | 3Q    | Max  |
-|------|-------|-------|-------|-------|------|
-| -337 | -78.25| 4.5   | 0     | 78.5  | 300  |
+ Min  | 1Q    | Med   | Mean  | 3Q    | Max  
+------|-------|-------|-------|-------|------
+ -337 | -78.25| 4.5   | 0     | 78.5  | 300  
 
 If we look at the five number summary of winning percentage with `summary()`, we see:
-| Min  | 1Q    | Med   | Mean  | 3Q    | Max  |
-|------|-------|-------|-------|-------|------|
-| .265 | .444  | .505  | .500  | .556  | .716 |
+ Min  | 1Q    | Med   | Mean  | 3Q    | Max  
+------|-------|-------|-------|-------|------
+ .265 | .444  | .505  | .500  | .556  | .716
 
 That should give us some expectation of just how much run differentials can translate into winning percentages in the furst place: clearly no one is winning all the games and even the lowest performing team is winning roughly a quarter of their games (.265, to be exact). However, we can plot the two against each other to test the general assumption, which to Marchi and Albert seems obvious but which I treat with a little more hesitation, that greater run differential may translate into a higher winning percentage:
 ```
