@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Regression with tidy data"
+title:  "Runs and wins: regression with tidy data"
 date:   2019-04-12 16:00:00 -0700
 categories: Project
 ---
