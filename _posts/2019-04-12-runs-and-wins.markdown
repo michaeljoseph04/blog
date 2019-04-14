@@ -19,7 +19,7 @@ Chapter 4 of Marchi and Albert's book covers the relation between runs and wins.
 
 ### Summary statistics for MLB Run Differentials, 1900-present
 | Min  | Med   | Mean  | Max  |
-|------|:-----:|:-----:|-----:|
+|------|-------|-------|------|
 | -349 | 5     | 0     | 411  |
 
 The median run differential for the 2452 team-seasons played since 1900 is a remarkable number: 5 runs scored more than allowed across the entire season. On average--even more remarkably-- teams scored no more runs than they allowed by the other team in each season. The distribution shows this well: most cases are precisely around 0, with a peak just below and just above 0. However, it is the information other than that able to be gathered by looking at central tendency which we will be concerned with, since each of the teams here may have had different outcomes in terms of their success at winning: obviously no team can win if they only allowed runs, but how many wins do they need to score in order to actually win?
@@ -45,12 +45,12 @@ t <- t %>%
 ```
 If we look at the five number summary of run differentials with `summary()`, we see:
 | Min  | 1Q    | Med   | Mean  | 3Q    | Max  |
-|------|:-----:|:-----:|:-----:|:-----:|-----:|
+|------|-------|-------|-------|-------|------|
 | -337 | -78.25| 4.5   | 0     | 78.5  | 300  |
 
 If we look at the five number summary of winning percentage with `summary()`, we see:
 | Min  | 1Q    | Med   | Mean  | 3Q    | Max  |
-|------|:-----:|:-----:|:-----:|:-----:|-----:|
+|------|-------|-------|-------|-------|------|
 | .265 | .444  | .505  | .500  | .556  | .716 |
 
 That should give us some expectation of just how much run differentials can translate into winning percentages in the furst place: clearly no one is winning all the games and even the lowest performing team is winning roughly a quarter of their games (.265, to be exact). However, we can plot the two against each other to test the general assumption, which to Marchi and Albert seems obvious but which I treat with a little more hesitation, that greater run differential may translate into a higher winning percentage:
@@ -67,7 +67,7 @@ p <- ggplot(data=t, aes(x=rundiff, y=wpct))+
 
 If we do the same work and look at the data from 1900, this pattern becomes even more clear:
 
-![wpctrd1900](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/wpctrd.jpeg)
+![wpctrd1900](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/wpctrd1900.jpeg)
 
 ## 1.3 Building a model
 We can understand this association in two ways: we can understand even better the actual historical association, or we can build a model to understand the expected winning percentage given a particular run differential. Marchi and Albert do the latter.
