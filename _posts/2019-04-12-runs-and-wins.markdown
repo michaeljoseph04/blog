@@ -15,9 +15,13 @@ Unfortunately, because the book was published in 2013, there's little support in
 
 Chapter 4 of Marchi and Albert's book covers the relation between runs and wins. Specifically it follows the very interesting question of whether run differential matters in baseball. Run differential is the difference between the winning team's runs and the runs of the opponent, or *how much a team beat their opponent by*. All a team has to do to beat an opponent, of course, is one more run than them. But not all opponents are beaten equally, as it were. Some teams may beat their opponents by a lot, in order presumably to protect their leads. Baseball can be a streaky game: few runs are scored, until when several people get on base, and then they can be all knocked in at once. On the other hand, some teams may play more defensively, keeping their opponents to low scores, and then squeaking by. Looking at the distribution of run differentials across teams' seasons shows this:
 
-![rundiff](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/rundiff.jpeg)
+![rundiffhist](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/rundiffhist.jpeg)
 
-### Summary statistics for MLB Run Differentials, 1900-present
+### Summary statistics for MLB Run Differentials, 1900-Present
+- Minimum: -349
+- Median: 5
+- Mean: 0
+- Maximum: 411
 | Min  | Med   | Mean  | Max  |
 |------|-------|-------|------|
 | -349 | 5     | 0     | 411  |
