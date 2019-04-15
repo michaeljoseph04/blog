@@ -22,9 +22,6 @@ Chapter 4 of Marchi and Albert's book covers the relation between runs and wins.
 - Median: 5
 - Mean: 0
 - Maximum: 411
-| Min  | Med   | Mean  | Max  |
-|------|-------|-------|------|
-| -349 | 5     | 0     | 411  |
 
 The median run differential for the 2452 team-seasons played since 1900 is a remarkable number: 5 runs scored more than allowed across the entire season. On average--even more remarkably-- teams scored no more runs than they allowed by the other team in each season. The distribution shows this well: most cases are precisely around 0, with a peak just below and just above 0. However, it is the information other than that able to be gathered by looking at central tendency which we will be concerned with, since each of the teams here may have had different outcomes in terms of their success at winning: obviously no team can win if they only allowed runs, but how many wins do they need to score in order to actually win?
 
