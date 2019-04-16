@@ -17,15 +17,20 @@ Chapter 4 of Marchi and Albert's book covers the relation between runs and wins.
 
 ![rundifhist](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/rundifhist.jpeg)
 
-### Summary statistics for MLB Run Differentials, 1900-Present
+We can also look at the summary statistics:
 - Minimum: -349
 - Median: 5
 - Mean: 0
 - Maximum: 411
 
-The median run differential for the 2452 team-seasons played since 1900 is a remarkable number: 5 runs scored more than allowed across the entire season. On average--even more remarkably-- teams scored no more runs than they allowed by the other team in each season. The distribution shows this well: most cases are precisely around 0, with a peak just below and just above 0. However, it is the information other than that able to be gathered by looking at central tendency which we will be concerned with, since each of the teams here may have had different outcomes in terms of their success at winning: obviously no team can win if they only allowed runs, but how many wins do they need to score in order to actually win?
+The median run differential for the 2452 team-seasons played since 1900 is a remarkable number: 5 runs scored more than allowed across the entire season. On average--even more remarkably-- teams scored no more runs than they allowed by the other team in each season. The distribution shows this well: most cases are precisely around 0, with a peak just below and just above 0.
 
-## 1.2 Calculating basic stats
+## 1.2 A remark on regression
+However, it is the information other than that able to be gathered by looking at central tendency which we will be concerned with, since each of the teams here may have had different outcomes in terms of their success at winning.
+
+It's important to review what we are trying to do when we say something like this, before we proceed. What we are doing in linear regression is trying to see if a distribution of a variable can be related *linearly* to another variable. We are trying to relate one variable to another by making it dependent on that variable in order to get a better answer about any and every variable. This allows us to find out more information using the model: given a certian run differential, we should be able to tell more about the amount needed to winning percentage. While our model may give us a precise answer, and the actual world may be more messy than that, we have nevertheless provided a link between two variables that is plausible. To use the language of some econometricians (specifically, Philip Hans Frances), this link allows us to shift from unconditional to conditional expectations, or an expectation that depends on a linked variable.
+
+## 1.3 Calculating basic stats
 First, let's import libraries. We will use `Lahman`, an [R package maintained by Chris Dalzell](https://cran.r-project.org/web/packages/Lahman/index.html) which allows you to access [Sean Lahman's amazing baseball database](http://www.seanlahman.com/) easily, with its comprehensive team statistics. We will also use the `tidyverse` package, for tidy data manipulation. Finally we will want `broom`, [by Alex Hayes](https://cran.r-project.org/web/packages/broom/index.html), which has tools for [taking statistical test output and placing it](https://cran.r-project.org/web/packages/broom/vignettes/broom.html) in a tidy data format.
 ```
 library(Lahman)
@@ -77,7 +82,7 @@ If we do the same work and look at the data from 1900, this pattern becomes even
 
 ![wpctrd1900](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/wpctrd1900.jpeg)
 
-## 1.3 Building a model
+## 1.4 Building a model
 We can understand this association in two ways: we can understand even better the actual historical association, or we can build a model to understand the expected winning percentage given a particular run differential. Marchi and Albert do the latter.
 
 First, we suggest the model:
@@ -170,5 +175,5 @@ teamID yearID lgID   G   W  L   R  RA rundiff      wpct      .resid
 ```
 Arizona had a very large negative run differential but still a rather average winning percentage (near the median of .500  and between the first and third quartile, see our consideration of it above). Cleveland had high differentials but average winning percentage; Texas had a small run differential with a high winning percentage. Finally, the Angels had run differential within the first and third quartiles (and somewhat close to the mean) and a high winning percentage. If the relation between run differentials and winning percentages are to be better understood, a more complex model may need to be built.
 
-## Conclusion
+## 1.5 Conclusion
 In the end, the tidy data format allows much cleaner code, much more familiar and intuitive operations with data, and also works well with visualization to make it a compelling alternative to many base R workflows. I hope this modification to one basic exercise in Marchi and Albert's excellent book is helpful, and shows the ways that some approaches there and elsewhere might be updated.
