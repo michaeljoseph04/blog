@@ -70,8 +70,8 @@ That should give us some expectation of just how much run differentials can tran
 ```
 p <- ggplot(data=t, aes(x=rundiff, y=wpct))+
   geom_point()+
-  labs(title="Winning Percentage by Run Differentials, 2000-Present")+
-  xlab("Run Differential")+ylab("Cases")+
+  labs(title="Winning Percentage vs Run Differentials, 2000-Present")+
+  xlab("Run Differential")+ylab("Winning Percentage")+
   scale_x_continuous(breaks=seq(from=-400, to=400, by=100))+
   theme_classic()
 ```
