@@ -1,0 +1,21 @@
+---
+layout: post
+title:  "Domain Specific Languages"
+date:   2019-04-12 22:00:00 -0700
+categories: Project
+---
+
+*A reflection on domain specific languages*
+
+![retailers](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/retailers.jpeg)
+
+I can't recommend Mark van der Loo and Edwin de Jonge's *Statistical Data Cleaning in with Applications in R* enough. It is extremely thorough, extremely useful, and serves as a great reference as well as an introduction.
+
+However, in their chapter on their data validation `validate` package and how to use it--and it can't be said enough that the package is brilliant and has changed how I have worked for a while--they pick up the question of why begin to develop specific syntaxes embedded in R at all? I've been searching for a way to express this myself, since so much of what makes the R universe unique are things like base R's interesting statistical function syntax, e.g. `lm(var1 ~ var2, var3)`). And I can't think of a more concise statement of the pros and cons of embedding a domain specific language within another than theirs:
+
+```
+There are many advantages to implementing a data validation syntax embedded into R. First, R’s facilities to compute on the language including access to the abstract syntax tree of statements and nonstandard evaluation make experimenting with such an implementation a breeze. In particular, it makes it easy to experiment with different ideas and test them out in practice, something which is much harder while developing a standalone DSL. Second, using R as a host language means access to the truly enormous data processing and statistical capabilities that come with R and its packages at no cost whatsoever. Third, many users interested in data validation are already familiar with R and will be able to use the DSL with relative ease.
+
+The downside of embedding a DSL into another language includes leakage: a user may (unwittingly) "escape" the DSL and use more advanced features of the host language. A second downside is that the syntax of the host language may be too limited to accurately capture the concepts for which the DSL was designed. It is of interest to note that R is more flexible than many other languages, since it allows for the definition of user-defined infix operators. The most famous example is probably the pipe operator %>% of the magrittr package.
+- From Statistical Data Cleaning in with Applications in R, p. 149
+```
