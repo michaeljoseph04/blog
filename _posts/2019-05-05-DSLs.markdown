@@ -7,7 +7,7 @@ categories: Project
 
 *A reflection on domain specific languages*
 
-![retailers](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/retailers.jpeg)
+![retailers](https://raw.githubusercontent.com/michaeljoseph04/blog/gh-pages/images/retailers.png)
 
 I can't recommend Mark van der Loo and Edwin de Jonge's *Statistical Data Cleaning in with Applications in R* enough. It is extremely thorough, extremely useful, and serves as a great reference as well as an introduction.
 
